@@ -17,7 +17,7 @@ app.post("/refresh", (req, res) => {
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     refreshToken,
-  });
+  })
 
   spotifyApi
     .refreshAccessToken()
@@ -62,4 +62,5 @@ app.get("/lyrics", async (req, res) => {
   res.json({ lyrics });
 });
 
-app.listen(3001);
+var port = process.env.PORT || 3001;
+app.listen(port);
