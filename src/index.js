@@ -4,7 +4,7 @@ import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App style={{backgroundColor: "#020101"}} />
   </React.StrictMode>,
   document.getElementById('root')
 );
