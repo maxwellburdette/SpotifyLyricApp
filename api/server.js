@@ -62,5 +62,5 @@ app.get("/lyrics", async (req, res) => {
   res.json({ lyrics });
 });
 
-var port = process.env.PORT || 3001;
+var port = process.env.PORT || 8090;
 app.listen(port);

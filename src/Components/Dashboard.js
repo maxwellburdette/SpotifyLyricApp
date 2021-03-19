@@ -26,7 +26,7 @@ export default function Dashboard({ code }) {
   useEffect(() => {
     if (!playingTrack) return;
     axios
-      .get("https://spotifylyricapi.azurewebsites.net/lyrics", {
+      .get("http://localhost:8090/lyrics", {
         params: {
           track: playingTrack.title,
           artist: playingTrack.artist,

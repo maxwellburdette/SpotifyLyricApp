@@ -8,7 +8,7 @@ export default function useAuth(code) {
 
   useEffect(() => {
     axios
-      .post("https://spotifylyricapi.azurewebsites.net/login", {
+      .post("http://localhost:8090/login", {
         code,
       })
       .then((res) => {
@@ -26,7 +26,7 @@ export default function useAuth(code) {
     if (!refreshToken || !expiresIn) return;
     const internal = setInterval(() => {
       axios
-        .post("https://spotifylyricapi.azurewebsites.net/refresh", {
+        .post("http://localhost:8090/refresh", {
           refreshToken,
         })
         .then((res) => {
