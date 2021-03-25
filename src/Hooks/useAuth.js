@@ -8,7 +8,7 @@ export default function useAuth(code) {
 
   useEffect(() => {
     axios
-      .post("http://localhost:8090/login", {
+      .post("http://localhost:8090/api/login", {
         code,
       })
       .then((res) => {
@@ -26,7 +26,7 @@ export default function useAuth(code) {
     if (!refreshToken || !expiresIn) return;
     const internal = setInterval(() => {
       axios
-        .post("http://localhost:8090/refresh", {
+        .post("http://localhost:8090/api/refresh", {
           refreshToken,
         })
         .then((res) => {
