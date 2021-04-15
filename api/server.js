@@ -5,7 +5,6 @@ const bodyParser = require("body-parser")
 const lyricsFinder = require("lyrics-finder")
 const SpotifyWebApi = require("spotify-web-api-node")
 
-<<<<<<< HEAD
 const app = express()
 app.use(cors())
 app.use(express.json())
@@ -24,28 +23,6 @@ app.post("/refresh", (req, res) => {
 		clientSecret: "32a8b1dc83b94672842e8eb8f9759c30",
 		refreshToken
 	})
-=======
-const app = express();
-var router = express.Router();
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/api', router);
-
-router.use((request, response, next) => {
-  console.log('middleware');
-  next();
-})
-
-router.post("/refresh", (req, res) => {
-  const refreshToken = req.body.refreshToken;
-  const spotifyApi = new SpotifyWebApi({
-    redirectUri: process.env.REDIRECT_URI,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    refreshToken,
-  })
->>>>>>> 63cd8c86cc9b675080aea18821b88bfa1dc267fc
 
 	spotifyApi
 		.refreshAccessToken()
@@ -61,7 +38,6 @@ router.post("/refresh", (req, res) => {
 		})
 })
 
-<<<<<<< HEAD
 app.post("/login", (req, res) => {
 	const code = req.body.code
 	const spotifyApi = new SpotifyWebApi({
@@ -69,15 +45,6 @@ app.post("/login", (req, res) => {
 		clientSecret: "32a8b1dc83b94672842e8eb8f9759c30",
 		redirectUri: "http://localhost:3000"
 	})
-=======
-router.post("/login", (req, res) => {
-  const code = req.body.code;
-  const spotifyApi = new SpotifyWebApi({
-    redirectUri: process.env.REDIRECT_URI,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-  });
->>>>>>> 63cd8c86cc9b675080aea18821b88bfa1dc267fc
 
 	spotifyApi
 		.authorizationCodeGrant(code)
@@ -94,7 +61,6 @@ router.post("/login", (req, res) => {
 		})
 })
 
-<<<<<<< HEAD
 app.get("/lyrics", async (req, res) => {
 	const lyrics =
 		(await lyricsFinder(req.query.artist, req.query.track)) || "No Lyrics Found"
@@ -103,15 +69,3 @@ app.get("/lyrics", async (req, res) => {
 
 var port = process.env.PORT || 3001
 app.listen(port)
-=======
-router.get("/lyrics", async (req, res) => {
-  const lyrics =
-    (await lyricsFinder(req.query.artist, req.query.track)) ||
-    "No Lyrics Found";
-  res.json({ lyrics });
-});
-
-var port = process.env.PORT || 8090;
-app.listen(port);
-console.log("User API is running at " + 'http://localhost:' +  port);
->>>>>>> 63cd8c86cc9b675080aea18821b88bfa1dc267fc

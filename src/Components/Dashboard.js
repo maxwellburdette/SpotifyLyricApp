@@ -32,27 +32,24 @@ export default function Dashboard({ code }) {
 		)
 	}, [])
 
-<<<<<<< HEAD
 	function chooseTrack(track) {
 		setPlayingTrack(track)
 		setSearch("")
 		setLyrics("")
 	}
-=======
-  useEffect(() => {
-    if (!playingTrack) return;
-    axios
-      .get("http://localhost:8090/api/lyrics", {
-        params: {
-          track: playingTrack.title,
-          artist: playingTrack.artist,
-        },
-      })
-      .then((res) => {
-        setLyrics(res.data.lyrics);
-      });
-  }, [playingTrack]);
->>>>>>> 63cd8c86cc9b675080aea18821b88bfa1dc267fc
+	useEffect(() => {
+		if (!playingTrack) return
+		axios
+			.get("http://localhost:8090/api/lyrics", {
+				params: {
+					track: playingTrack.title,
+					artist: playingTrack.artist
+				}
+			})
+			.then(res => {
+				setLyrics(res.data.lyrics)
+			})
+	}, [playingTrack])
 
 	useEffect(() => {
 		if (!playingTrack) return
