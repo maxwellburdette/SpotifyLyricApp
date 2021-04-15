@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "client": "cd api && yarn start",
-    "server": "nodemon server.js",
+    "devStart": "nodemon server.js",
     "start": "node server.js"
   },
   "keywords": [],
