@@ -1,15 +1,13 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Login from './Components/Login';
-import Dashboard from './Components/Dashboard'
-import './App.css';
+import Login from "./Components/Login"
+import Dashboard from "./Components/Dashboard"
 
-const code = new URLSearchParams(window.location.search).get('code');
+const code = new URLSearchParams(window.location.search).get("code")
 function App() {
-  return (
-    <div className="app" style={{backgroundColor: '#333'}}>
-      {code ? <Dashboard code={code} ></Dashboard> : <Login />}
-    </div>
-  );
+	return (
+		<div className="app" style={{ backgroundColor: "#333" }}>
+			{code ? <Dashboard code={code}></Dashboard> : <Login />}
+		</div>
+	)
 }
 
-export default App;
+export default App
