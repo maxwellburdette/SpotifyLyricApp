@@ -15,6 +15,7 @@ export default function Player({ accessToken, trackUri }) {
 			}}
 			play={play}
 			uris={trackUri ? [trackUri] : []}
+			syncExternalDevice={true}
 			styles={{
 				activeColor: "#fff",
 				bgColor: "#333",

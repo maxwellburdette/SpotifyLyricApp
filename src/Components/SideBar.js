@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { ListGroup, Image } from "react-bootstrap";
-import "./sidebar.css";
+import { useEffect } from "react"
+import { ListGroup, Image } from "react-bootstrap"
+import "./sidebar.css"
 
 export default function SideBar({
 	user,
@@ -8,33 +8,33 @@ export default function SideBar({
 	spotifyApi,
 	setSearchResults,
 	image,
-	backgroundColor,
+	backgroundColor
 }) {
 	useEffect(() => {
-		if (!image) return;
-		console.log(image);
-	}, [image]);
+		if (!image) return
+		console.log(image)
+	}, [image])
 	function handle(e) {
-		e.preventDefault();
-		let playlistId = e.target.value;
+		e.preventDefault()
+		let playlistId = e.target.value
 		spotifyApi.getPlaylist(playlistId).then(
 			function (data) {
-				console.log(data.body.tracks.items[0]);
+				console.log(data.body.tracks.items[0])
 				setSearchResults(
-					data.body.tracks.items.map((track) => {
+					data.body.tracks.items.map(track => {
 						const smallestAlbumImage = track.track.album.images.reduce(
 							(smallest, image) => {
-								if (image.height < smallest.height) return image;
-								return smallest;
+								if (image.height < smallest.height) return image
+								return smallest
 							}
-						);
+						)
 
 						const biggestAlbumImage = track.track.album.images.reduce(
 							(largest, image) => {
-								if (image.height > largest.height) return image;
-								return largest;
+								if (image.height > largest.height) return image
+								return largest
 							}
-						);
+						)
 						//const biggestAlbumImage = getMiddle(track.track.album.images);
 
 						return {
@@ -42,36 +42,36 @@ export default function SideBar({
 							title: track.track.name,
 							uri: track.track.uri,
 							albumUrl: smallestAlbumImage.url,
-							bigImage: biggestAlbumImage.url,
-						};
+							bigImage: biggestAlbumImage.url
+						}
 					})
-				);
+				)
 			},
 			function (err) {
-				console.log("Something went wrong!", err);
+				console.log("Something went wrong!", err)
 			}
-		);
+		)
 	}
 
 	function getMiddle(e) {
-		return e[1];
+		return e[1]
 	}
 	return (
-		<div className="d-flex flex-column justify-content-stretch">
+		<div className="d-flex flex-column justify-content-stretch position-relative">
 			<ListGroup
-				className="justify-content-top"
+				className="mb-2 justify-content-top"
 				style={{
 					overflowY: "auto",
-					height: "100vh",
+					height: "60vh"
 				}}
 			>
 				<h2
-					className="py-2"
+					className="py-2 sticky-top"
 					style={{
 						color: "#fff",
-						background: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
+						background: "linear-gradient(rgba(52,52,52,1), rgba(52,52,52,1)",
 						textAlign: "center",
-						borderBottom: "1px solid #444",
+						borderBottom: "1px solid #444"
 					}}
 				>
 					{user}
@@ -79,7 +79,7 @@ export default function SideBar({
 						Playlists:
 					</h4>
 				</h2>
-				{playlists.map((playlist) => (
+				{playlists.map(playlist => (
 					<ListGroup.Item
 						key={Math.random()}
 						className="selection "
@@ -87,7 +87,7 @@ export default function SideBar({
 							color: "#fff",
 							background: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
 							textAlign: "center",
-							border: "none",
+							border: "none"
 						}}
 						onClick={handle}
 						value={playlist.id}
@@ -96,14 +96,25 @@ export default function SideBar({
 						{playlist.name}
 					</ListGroup.Item>
 				))}
+			</ListGroup>
+			<ListGroup
+				className="d-flex align-items-center justify-content-center mb-3"
+				style={{
+					overflowY: "auto",
+					height: "40vh"
+				}}
+			>
 				<ListGroup.Item
+					className=""
 					style={{
 						background: "none",
+						border: "none",
+						maxWidth: "300px"
 					}}
 				>
-					<Image src={image} fluid />
+					<Image className="shadow" src={image} fluid />
 				</ListGroup.Item>
 			</ListGroup>
 		</div>
-	);
+	)
 }
