@@ -1,18 +1,24 @@
-import Login from "./Components/Login"
-import Dashboard from "./Components/Dashboard"
-import { useState } from "react"
-import "./App.css"
+import Login from "./Components/Login";
+import Dashboard from "./Components/Dashboard";
+import { useState } from "react";
+import "./App.css";
 
-const code = new URLSearchParams(window.location.search).get("code")
+const code = new URLSearchParams(window.location.search).get("code");
 function App() {
-	const [backgroundColor, setBackgroundColor] = useState("")
+	const [backgroundColor, setBackgroundColor] = useState("");
 	return (
 		<div
 			className="app"
 			style={
 				backgroundColor
-					? { background: backgroundColor }
-					: { background: "#333" }
+					? {
+							transition: '0.5s',
+							backgroundImage: backgroundColor
+					  }
+					: {
+							transition: '0.5s',
+							backgroundImage: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)"
+					  }
 			}
 		>
 			{code ? (
@@ -25,7 +31,7 @@ function App() {
 				<Login />
 			)}
 		</div>
-	)
+	);
 }
 
-export default App
+export default App;

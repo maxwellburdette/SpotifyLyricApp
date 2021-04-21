@@ -1,7 +1,8 @@
-.selection {
-	transition: 0.5s;
-}
 .selection:hover {
 	opacity: 0.7;
-	transform: scale(1.5) rotate(-5deg);
+}
+
+.app
+{
+	transition: 0.5s;
 }

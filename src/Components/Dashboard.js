@@ -25,6 +25,7 @@ export default function Dashboard({
 	const [user, setUser] = useState("")
 	const [playlists, setPlaylists] = useState([])
 	const [color, setColor] = useState([])
+	const [image, setImage] = useState("")
 
 	function chooseTrack(track) {
 		setPlayingTrack(track)
@@ -35,6 +36,8 @@ export default function Dashboard({
 
 	useEffect(() => {
 		if (!playingTrack) return
+
+		setImage(playingTrack.bigImage);
 
 		console.log(playingTrack.albumUrl)
 		axios
@@ -47,7 +50,6 @@ export default function Dashboard({
 			.then(res => {
 				setLyrics(res.data.lyrics)
 			})
-
 		axios
 			.get("http://localhost:3001/color", {
 				params: {
@@ -62,8 +64,9 @@ export default function Dashboard({
 
 	useEffect(() => {
 		setBackgroundColor(
-			"rgba(" + color[0] + "," + color[1] + "," + color[2] + ",0.9)"
+			"linear-gradient(rgba(" + color[0] + "," + color[1] + "," + color[2] + ", 0.5), rgba(" + color[0] + "," + color[1] + "," + color[2] + ", 1))"
 		)
+
 	}, [color])
 
 	useEffect(() => {
@@ -87,14 +90,21 @@ export default function Dashboard({
 							if (image.height < smallest.height) return image
 							return smallest
 						},
-						track.album.images[0]
+						
 					)
+					const biggestAlbumImage = track.album.images.reduce(
+						(largest, image) => {
+							if (image.height > largest.height) return image;
+							return largest;
+						}
+					);
 
 					return {
 						artist: track.artists[0].name,
 						title: track.name,
 						uri: track.uri,
-						albumUrl: smallestAlbumImage.url
+						albumUrl: smallestAlbumImage.url,
+						bigImage: biggestAlbumImage.url
 					}
 				})
 			)
@@ -126,14 +136,13 @@ export default function Dashboard({
 	}
 
 	return (
-		<Container className="d-flex p-0" style={{ width: "100%" }} fluid>
+		<Container className="d-flex p-0 mb-0" style={{ width: "100%", height: "100vh"}} fluid>
 			<Container
-				className="my-2"
+				className=""
 				style={{
-					height: "90vh",
-					background: "#333",
+					
 					width: "25%",
-					overflow: "auto"
+					overflow: "hidden"
 				}}
 			>
 				<SideBar
@@ -142,11 +151,13 @@ export default function Dashboard({
 					accessToken={accessToken}
 					spotifyApi={spotifyApi}
 					setSearchResults={setSearchResults}
+					image={image}
+					backgroundColor={backgroundColor}
 				/>
 			</Container>
 			<Container
 				className="d-flex flex-column pt-2 px-1 pb-0"
-				style={{ height: "100vh", backgroundColor: "#636262", width: "75%" }}
+				style={{ border: " 1px solid #636262", background: "linear-gradient(rgb(52,52,52,.5), rgb(52,52,52,1)", height: "100vh", width: "75%" }}
 			>
 				<Form.Control
 					type="search"
@@ -177,7 +188,7 @@ export default function Dashboard({
 					)}
 				</div>
 				<Container fluid>
-					<div>
+					<div className="mb-2">
 						<Player accessToken={accessToken} trackUri={playingTrack?.uri} />
 					</div>
 				</Container>
