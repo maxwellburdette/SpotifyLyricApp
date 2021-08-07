@@ -1,8 +1,8 @@
-import React from "react"
+import React from "react";
 
 export default function TrackSearchResult({ track, chooseTrack }) {
 	function handlePlay() {
-		chooseTrack(track)
+		chooseTrack(track);
 	}
 	return (
 		<div
@@ -10,7 +10,8 @@ export default function TrackSearchResult({ track, chooseTrack }) {
 			style={{
 				cursor: "pointer",
 				backgroundColor: "white",
-				borderRadius: "5px"
+				borderRadius: "5px",
+				overflow: "hidden",
 			}}
 			onClick={handlePlay}
 		>
@@ -26,5 +27,5 @@ export default function TrackSearchResult({ track, chooseTrack }) {
 				</div>
 			</div>
 		</div>
-	)
+	);
 }

@@ -12,17 +12,19 @@ function App() {
 			style={
 				backgroundColor
 					? {
-							transition: '0.5s',
-							backgroundImage: backgroundColor
+							transition: "0.5s",
+							backgroundImage: backgroundColor,
 					  }
 					: {
-							transition: '0.5s',
-							backgroundImage: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)"
+							transition: "0.5s",
+							backgroundImage:
+								"linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
 					  }
 			}
 		>
 			{code ? (
 				<Dashboard
+					style={{ padding: "0 !important", margin: "0 !important" }}
 					setBackgroundColor={setBackgroundColor}
 					backgroundColor={backgroundColor}
 					code={code}
