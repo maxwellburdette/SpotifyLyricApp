@@ -66,12 +66,20 @@ export default function SideBar({
 						background: "linear-gradient(rgba(52,52,52,1), rgba(52,52,52,1)",
 						textAlign: "center",
 						borderBottom: "1px solid #444",
+						width: "100%",
 					}}
 				>
 					{user}
-					<h4 className="ml-2 mt-2" style={{ color: "#fff" }}>
+					<br />
+					<span
+						className="ml-2 mt-2"
+						style={{ color: "#fff", fontSize: ".7em", width: "100%" }}
+					>
 						Playlists:
-					</h4>
+					</span>
+					{/* <h4 className="ml-2 mt-2" style={{ color: "#fff" }}>
+						Playlists:
+					</h4> */}
 				</h2>
 				{playlists.map((playlist) => (
 					<ListGroup.Item
