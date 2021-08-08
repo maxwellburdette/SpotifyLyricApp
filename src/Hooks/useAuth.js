@@ -27,7 +27,7 @@ export default function useAuth(code) {
 			})
 			.catch((err) => {
 				window.location = "/";
-				// console.log(err);
+				//console.log(err);
 			});
 	}, [code]);
 
@@ -36,7 +36,7 @@ export default function useAuth(code) {
 		const internal = setInterval(() => {
 			axios
 				.get(
-					"https://us-central1-triple-odyssey-298019.cloudfunctions.net/login",
+					"https://us-central1-triple-odyssey-298019.cloudfunctions.net/refresh",
 					{
 						params: {
 							refreshToken: refreshToken,

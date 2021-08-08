@@ -7,7 +7,6 @@ import { Container, Form } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import "../App.css";
-import os from "os";
 
 const spotifyApi = new SpotifyWebApi({
 	clientId: "6f1aee81690d4ed7a9ea151f597c4fd1",
@@ -71,6 +70,7 @@ export default function Dashboard({
 				setColor(res.data.domColor);
 				//console.log(color);
 			});
+
 		// eslint-disable-next-line
 	}, [playingTrack]);
 
@@ -220,7 +220,14 @@ export default function Dashboard({
 				</div>
 				<Container fluid>
 					<div className="mb-2">
-						<Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+						<Player
+							accessToken={accessToken}
+							trackUri={playingTrack?.uri}
+							setColor={setColor}
+							setImage={setImage}
+							setLyrics={setLyrics}
+							spotifyApi={spotifyApi}
+						/>
 					</div>
 				</Container>
 			</Container>
