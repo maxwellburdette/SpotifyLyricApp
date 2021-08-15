@@ -5,6 +5,11 @@ export default function useAuth(code) {
 	const [accessToken, setAccessToken] = useState();
 	const [refreshToken, setRefreshToken] = useState();
 	const [expiresIn, setExpiresIn] = useState();
+	//Switch variable being taken by endpoint when using different environments
+	const environment = {
+		prod: "prod",
+		dev: "dev",
+	};
 
 	useEffect(() => {
 		axios
@@ -13,6 +18,7 @@ export default function useAuth(code) {
 				{
 					params: {
 						code: code,
+						env: environment.prod,
 					},
 					headers: {
 						"Content-Type": "application/x-www-form-urlencoded",
@@ -29,6 +35,7 @@ export default function useAuth(code) {
 				window.location = "/";
 				//console.log(err);
 			});
+		// eslint-disable-next-line
 	}, [code]);
 
 	useEffect(() => {
@@ -40,6 +47,7 @@ export default function useAuth(code) {
 					{
 						params: {
 							refreshToken: refreshToken,
+							env: environment.prod,
 						},
 						headers: {
 							"Content-Type": "application/x-www-form-urlencoded",
@@ -56,6 +64,7 @@ export default function useAuth(code) {
 				});
 		}, (expiresIn - 60) * 1000);
 		return () => clearInterval(internal);
+		// eslint-disable-next-line
 	}, [refreshToken, expiresIn]);
 
 	return accessToken;
