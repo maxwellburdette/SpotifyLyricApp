@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
+import Shuffle from "./Shuffle";
 import axios from "axios";
 
 export default function Player({
@@ -84,27 +85,30 @@ export default function Player({
 	useEffect(() => setPlay(true), [trackUri]);
 	if (!accessToken) return null;
 	return (
-		<SpotifyPlayer
-			ref={player}
-			token={accessToken}
-			showSaveIcon
-			callback={(state) => {
-				setState(state);
-				if (!state.isPlaying) setPlay(false);
-			}}
-			play={play}
-			uris={trackUri ? [trackUri] : []}
-			syncExternalDevice="true"
-			styles={{
-				activeColor: "#fff",
-				bgColor: "#333",
-				color: "#fff",
-				loaderColor: "#fff",
-				sliderColor: "#1cb954",
-				trackArtistColor: "#ccc",
-				trackNameColor: "#fff",
-			}}
-			magnifySliderOnHover="true"
-		/>
+		<div style={{ position: "relative" }}>
+			<SpotifyPlayer
+				ref={player}
+				token={accessToken}
+				showSaveIcon
+				callback={(state) => {
+					setState(state);
+					if (!state.isPlaying) setPlay(false);
+				}}
+				play={play}
+				uris={trackUri ? [trackUri] : []}
+				syncExternalDevice="true"
+				styles={{
+					activeColor: "#fff",
+					bgColor: "#333",
+					color: "#fff",
+					loaderColor: "#fff",
+					sliderColor: "#1cb954",
+					trackArtistColor: "#ccc",
+					trackNameColor: "#fff",
+				}}
+				magnifySliderOnHover="true"
+			/>
+			<Shuffle spotifyApi={spotifyApi}></Shuffle>
+		</div>
 	);
 }
