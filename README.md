@@ -2,6 +2,6 @@
 
 # Production:
 
-https://triple-odyssey-298019.uc.r.appspot.com/
+https://spotifyplus.netlify.app
 
 ## More Changes to come soon
