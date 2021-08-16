@@ -1,7 +1,6 @@
 import React from "react";
 import "./sidebar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container } from "react-bootstrap";
 export default function Shuffle(params) {
 	const spotifyApi = params.spotifyApi;
 	function handleClick(e) {
