@@ -26,9 +26,11 @@ export default function Dashboard({
 	const [playlists, setPlaylists] = useState([]);
 	const [color, setColor] = useState([]);
 	const [image, setImage] = useState("");
+	const [addSong, setAddSong] = useState();
 
 	function chooseTrack(track) {
 		setPlayingTrack(track);
+		setAddSong(track);
 		setSearch("");
 		setLyrics("");
 		setSearchResults([]);
@@ -179,6 +181,7 @@ export default function Dashboard({
 					setSearchResults={setSearchResults}
 					image={image}
 					backgroundColor={backgroundColor}
+					addSong={addSong}
 				/>
 			</Container>
 			<Container
@@ -227,6 +230,7 @@ export default function Dashboard({
 							setImage={setImage}
 							setLyrics={setLyrics}
 							spotifyApi={spotifyApi}
+							setAddSong={setAddSong}
 						/>
 					</div>
 				</Container>

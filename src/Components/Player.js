@@ -10,6 +10,7 @@ export default function Player({
 	setImage,
 	setLyrics,
 	spotifyApi,
+	setAddSong,
 }) {
 	const [play, setPlay] = useState(false);
 	const [state, setState] = useState();
@@ -81,6 +82,11 @@ export default function Player({
 		});
 		// eslint-disable-next-line
 	}, [state]);
+
+	useEffect(() => {
+		setAddSong(currentlyPlaying);
+		// eslint-disable-next-line
+	}, [currentlyPlaying]);
 
 	useEffect(() => setPlay(true), [trackUri]);
 	if (!accessToken) return null;

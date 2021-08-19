@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ListGroup, Image } from "react-bootstrap";
 import "./sidebar.css";
-
+import AddSong from "./AddSong";
 export default function SideBar({
 	user,
 	playlists,
@@ -9,6 +9,7 @@ export default function SideBar({
 	setSearchResults,
 	image,
 	backgroundColor,
+	addSong,
 }) {
 	useEffect(() => {
 		if (!image) return;
@@ -116,6 +117,7 @@ export default function SideBar({
 				>
 					<Image className="shadow" src={image} fluid />
 				</ListGroup.Item>
+				<AddSong addSong={addSong}></AddSong>
 			</ListGroup>
 		</div>
 	);
