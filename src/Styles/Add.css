@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
 .button {
 	display: inline-block;
 	padding: 0.75rem 1.25rem;
@@ -11,6 +12,7 @@
 	z-index: 1;
 	border: none;
 	background: none;
+	font-family: "Poppins", sans-serif;
 }
 .button:after {
 	content: "";
