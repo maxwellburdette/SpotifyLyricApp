@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ListGroup, Image } from "react-bootstrap";
+import { ListGroup, Image, Container } from "react-bootstrap";
 import "./sidebar.css";
 import AddSong from "./AddSong";
 export default function SideBar({
@@ -54,7 +54,7 @@ export default function SideBar({
 	return (
 		<div className="d-flex flex-column justify-content-stretch position-relative">
 			<ListGroup
-				className="mb-2 justify-content-top"
+				className=" justify-content-top"
 				style={{
 					overflowY: "auto",
 					height: "60vh",
@@ -101,10 +101,10 @@ export default function SideBar({
 				))}
 			</ListGroup>
 			<ListGroup
-				className="d-flex align-items-center justify-content-center mb-3"
+				className="d-flex align-items-center justify-content-center"
 				style={{
 					overflowY: "auto",
-					height: "40vh",
+					minHeight: "10vh",
 				}}
 			>
 				<ListGroup.Item
@@ -117,7 +117,14 @@ export default function SideBar({
 				>
 					<Image className="shadow" src={image} fluid />
 				</ListGroup.Item>
-				<AddSong addSong={addSong}></AddSong>
+				<Container
+					className="p-2 d-flex justify-content-center "
+					style={{
+						background: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
+					}}
+				>
+					<AddSong className="" addSong={addSong}></AddSong>
+				</Container>
 			</ListGroup>
 		</div>
 	);
