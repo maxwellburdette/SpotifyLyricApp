@@ -9,7 +9,7 @@ import axios from "axios";
 import "../App.css";
 
 const spotifyApi = new SpotifyWebApi({
-	clientId: "6f1aee81690d4ed7a9ea151f597c4fd1",
+	clientId: process.env.REACT_APP_PROD_ID || process.env.PROD_ID,
 });
 
 export default function Dashboard({
@@ -28,6 +28,10 @@ export default function Dashboard({
 	const [image, setImage] = useState("");
 	const [addSong, setAddSong] = useState();
 
+	//API
+	const lyricsEndpoint = process.env.REACT_APP_LYRICS || process.env.LYRICS;
+	const colorEndpoint = process.env.REACT_APP_COLOR || process.env.COLOR;
+
 	function chooseTrack(track) {
 		setPlayingTrack(track);
 		setAddSong(track);
@@ -41,33 +45,27 @@ export default function Dashboard({
 
 		setImage(playingTrack.bigImage);
 		axios
-			.get(
-				"https://us-central1-triple-odyssey-298019.cloudfunctions.net/lyrics",
-				{
-					params: {
-						track: playingTrack.title,
-						artist: playingTrack.artist,
-					},
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-				}
-			)
+			.get(lyricsEndpoint, {
+				params: {
+					track: playingTrack.title,
+					artist: playingTrack.artist,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
 			.then((res) => {
 				setLyrics(res.data.lyrics);
 			});
 		axios
-			.get(
-				"https://us-central1-triple-odyssey-298019.cloudfunctions.net/color",
-				{
-					params: {
-						album: playingTrack.albumUrl,
-					},
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-				}
-			)
+			.get(colorEndpoint, {
+				params: {
+					album: playingTrack.albumUrl,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
 			.then((res) => {
 				setColor(res.data.domColor);
 				//console.log(color);
