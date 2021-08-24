@@ -30,7 +30,10 @@ export default function AddSong(params) {
 							color: "#fff",
 						}}
 					>
-						Adding: {params.addSong !== undefined ? params.addSong.name : ""}
+						Adding:{" "}
+						{params.addSong !== undefined
+							? params.addSong.name || params.addSong.title
+							: ""}
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body
