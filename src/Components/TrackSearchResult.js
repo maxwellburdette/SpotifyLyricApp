@@ -9,11 +9,23 @@ export default function TrackSearchResult({
 }) {
 	function handlePlay() {
 		chooseTrack(track);
-		var data = JSON.stringify({
-			context_uri: currentPlaylist,
-			offset: { uri: track.uri },
-			position_ms: 0,
-		});
+		//Make case for when there is no playlist to play from
+		let data;
+		if (!currentPlaylist) {
+			data = JSON.stringify({
+				context_uri: track.albumUri,
+				offset: {
+					uri: track.uri,
+				},
+				position_ms: 0,
+			});
+		} else {
+			data = JSON.stringify({
+				context_uri: currentPlaylist,
+				offset: { uri: track.uri },
+				position_ms: 0,
+			});
+		}
 
 		var config = {
 			method: "put",
@@ -28,7 +40,7 @@ export default function TrackSearchResult({
 
 		axios(config)
 			.then(function (response) {
-				console.log(JSON.stringify(response.data));
+				//console.log(JSON.stringify(response.data));
 			})
 			.catch(function (error) {
 				console.log(error);
