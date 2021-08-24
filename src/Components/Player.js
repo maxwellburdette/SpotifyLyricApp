@@ -18,8 +18,6 @@ export default function Player({
 	const player = useRef();
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS || process.env.LYRICS;
 	const colorEndpoint = process.env.REACT_APP_COLOR || process.env.COLOR;
-	console.log(lyricsEndpoint);
-	console.log(colorEndpoint);
 	useEffect(() => {
 		if (!state) return;
 		state.devices.map((device) => {

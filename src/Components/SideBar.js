@@ -10,6 +10,7 @@ export default function SideBar({
 	image,
 	backgroundColor,
 	addSong,
+	setSongAdded,
 }) {
 	useEffect(() => {
 		if (!image) return;
@@ -123,7 +124,13 @@ export default function SideBar({
 						background: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
 					}}
 				>
-					<AddSong className="" addSong={addSong}></AddSong>
+					<AddSong
+						className=""
+						addSong={addSong}
+						playlists={playlists}
+						spotifyApi={spotifyApi}
+						setSongAdded={setSongAdded}
+					></AddSong>
 				</Container>
 			</ListGroup>
 		</div>

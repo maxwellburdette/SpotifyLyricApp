@@ -7,6 +7,7 @@ import { Container, Form } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import "../App.css";
+import Success from "./Success";
 
 const spotifyApi = new SpotifyWebApi({
 	clientId: process.env.REACT_APP_PROD_ID || process.env.PROD_ID,
@@ -27,6 +28,7 @@ export default function Dashboard({
 	const [color, setColor] = useState([]);
 	const [image, setImage] = useState("");
 	const [addSong, setAddSong] = useState();
+	const [songAdded, setSongAdded] = useState(false);
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS || process.env.LYRICS;
@@ -39,6 +41,12 @@ export default function Dashboard({
 		setLyrics("");
 		setSearchResults([]);
 	}
+
+	useEffect(() => {
+		setTimeout(function () {
+			setSongAdded(false);
+		}, 5000);
+	}, [songAdded]);
 
 	useEffect(() => {
 		if (!playingTrack) return;
@@ -180,8 +188,14 @@ export default function Dashboard({
 					image={image}
 					backgroundColor={backgroundColor}
 					addSong={addSong}
+					setSongAdded={setSongAdded}
 				/>
 			</Container>
+			{songAdded ? (
+				<Success style={{ position: "absolute", bottom: "0" }}></Success>
+			) : (
+				""
+			)}
 			<Container
 				className="d-flex flex-column pt-2 px-1 pb-0"
 				style={{
