@@ -31,8 +31,8 @@ export default function Dashboard({
 	const [songAdded, setSongAdded] = useState(false);
 
 	//API
-	const lyricsEndpoint = process.env.REACT_APP_LYRICS || process.env.LYRICS;
-	const colorEndpoint = process.env.REACT_APP_COLOR || process.env.COLOR;
+	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
+	const colorEndpoint = process.env.REACT_APP_COLOR;
 
 	function chooseTrack(track) {
 		setPlayingTrack(track);

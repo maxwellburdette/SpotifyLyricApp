@@ -5,6 +5,8 @@ export default function useAuth(code) {
 	const [accessToken, setAccessToken] = useState();
 	const [refreshToken, setRefreshToken] = useState();
 	const [expiresIn, setExpiresIn] = useState();
+	const loginUrl = process.env.REACT_APP_LOGIN;
+	const refreshUrl = process.env.REACT_APP_REFRESH;
 	//Switch variable being taken by endpoint when using different environments
 	const environment = {
 		prod: "prod",
@@ -13,18 +15,16 @@ export default function useAuth(code) {
 
 	useEffect(() => {
 		axios
-			.get(
-				"https://us-central1-triple-odyssey-298019.cloudfunctions.net/login",
-				{
-					params: {
-						code: code,
-						env: environment.dev,
-					},
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-				}
-			)
+			.get(loginUrl, {
+				params: {
+					code: code,
+					env:
+						process.env === "production" ? environment.prod : environment.dev,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
 			.then((res) => {
 				setAccessToken(res.data.accessToken);
 				setRefreshToken(res.data.refreshToken);
@@ -42,18 +42,16 @@ export default function useAuth(code) {
 		if (!refreshToken || !expiresIn) return;
 		const internal = setInterval(() => {
 			axios
-				.get(
-					"https://us-central1-triple-odyssey-298019.cloudfunctions.net/refresh",
-					{
-						params: {
-							refreshToken: refreshToken,
-							env: environment.dev,
-						},
-						headers: {
-							"Content-Type": "application/x-www-form-urlencoded",
-						},
-					}
-				)
+				.get(refreshUrl, {
+					params: {
+						refreshToken: refreshToken,
+						env:
+							process.env === "production" ? environment.prod : environment.dev,
+					},
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded",
+					},
+				})
 				.then((res) => {
 					setAccessToken(res.data.accessToken);
 					setExpiresIn(res.data.expiresIn);
