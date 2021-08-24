@@ -40,6 +40,7 @@ export default function Dashboard({
 		setAddSong(track);
 		setSearch("");
 		setLyrics("");
+		setCurrentPlaylist("");
 		setSearchResults([]);
 	}
 
@@ -172,6 +173,7 @@ export default function Dashboard({
 						uri: track.uri,
 						albumUrl: smallestAlbumImage.url,
 						bigImage: biggestAlbumImage.url,
+						albumUri: track.album.uri,
 					};
 				})
 			);
