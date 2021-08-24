@@ -18,7 +18,7 @@ export default function useAuth(code) {
 				{
 					params: {
 						code: code,
-						env: environment.prod,
+						env: environment.dev,
 					},
 					headers: {
 						"Content-Type": "application/x-www-form-urlencoded",
@@ -47,7 +47,7 @@ export default function useAuth(code) {
 					{
 						params: {
 							refreshToken: refreshToken,
-							env: environment.prod,
+							env: environment.dev,
 						},
 						headers: {
 							"Content-Type": "application/x-www-form-urlencoded",

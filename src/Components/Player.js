@@ -10,11 +10,14 @@ export default function Player({
 	setImage,
 	setLyrics,
 	spotifyApi,
+	setAddSong,
 }) {
 	const [play, setPlay] = useState(false);
 	const [state, setState] = useState();
 	const [currentlyPlaying, setCurrentlyPlaying] = useState();
 	const player = useRef();
+	const lyricsEndpoint = process.env.REACT_APP_LYRICS || process.env.LYRICS;
+	const colorEndpoint = process.env.REACT_APP_COLOR || process.env.COLOR;
 	useEffect(() => {
 		if (!state) return;
 		state.devices.map((device) => {
@@ -44,34 +47,28 @@ export default function Player({
 						});
 
 					axios
-						.get(
-							"https://us-central1-triple-odyssey-298019.cloudfunctions.net/color",
-							{
-								params: {
-									album: playingTrack.image,
-								},
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded",
-								},
-							}
-						)
+						.get(colorEndpoint, {
+							params: {
+								album: playingTrack.image,
+							},
+							headers: {
+								"Content-Type": "application/x-www-form-urlencoded",
+							},
+						})
 						.then((res) => {
 							setColor(res.data.domColor);
 							//console.log(color);
 						});
 					axios
-						.get(
-							"https://us-central1-triple-odyssey-298019.cloudfunctions.net/lyrics",
-							{
-								params: {
-									track: playingTrack.name,
-									artist: playingTrack.artists,
-								},
-								headers: {
-									"Content-Type": "application/x-www-form-urlencoded",
-								},
-							}
-						)
+						.get(lyricsEndpoint, {
+							params: {
+								track: playingTrack.name,
+								artist: playingTrack.artists,
+							},
+							headers: {
+								"Content-Type": "application/x-www-form-urlencoded",
+							},
+						})
 						.then((res) => {
 							setLyrics(res.data.lyrics);
 						});
@@ -81,6 +78,11 @@ export default function Player({
 		});
 		// eslint-disable-next-line
 	}, [state]);
+
+	useEffect(() => {
+		setAddSong(currentlyPlaying);
+		// eslint-disable-next-line
+	}, [currentlyPlaying]);
 
 	useEffect(() => setPlay(true), [trackUri]);
 	if (!accessToken) return null;

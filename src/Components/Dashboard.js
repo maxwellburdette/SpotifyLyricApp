@@ -7,9 +7,10 @@ import { Container, Form } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import "../App.css";
+import Success from "./Success";
 
 const spotifyApi = new SpotifyWebApi({
-	clientId: "6f1aee81690d4ed7a9ea151f597c4fd1",
+	clientId: process.env.REACT_APP_PROD_ID || process.env.PROD_ID,
 });
 
 export default function Dashboard({
@@ -26,46 +27,53 @@ export default function Dashboard({
 	const [playlists, setPlaylists] = useState([]);
 	const [color, setColor] = useState([]);
 	const [image, setImage] = useState("");
+	const [addSong, setAddSong] = useState();
+	const [songAdded, setSongAdded] = useState(false);
+
+	//API
+	const lyricsEndpoint = process.env.REACT_APP_LYRICS || process.env.LYRICS;
+	const colorEndpoint = process.env.REACT_APP_COLOR || process.env.COLOR;
 
 	function chooseTrack(track) {
 		setPlayingTrack(track);
+		setAddSong(track);
 		setSearch("");
 		setLyrics("");
 		setSearchResults([]);
 	}
 
 	useEffect(() => {
+		setTimeout(function () {
+			setSongAdded(false);
+		}, 5000);
+	}, [songAdded]);
+
+	useEffect(() => {
 		if (!playingTrack) return;
 
 		setImage(playingTrack.bigImage);
 		axios
-			.get(
-				"https://us-central1-triple-odyssey-298019.cloudfunctions.net/lyrics",
-				{
-					params: {
-						track: playingTrack.title,
-						artist: playingTrack.artist,
-					},
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-				}
-			)
+			.get(lyricsEndpoint, {
+				params: {
+					track: playingTrack.title,
+					artist: playingTrack.artist,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
 			.then((res) => {
 				setLyrics(res.data.lyrics);
 			});
 		axios
-			.get(
-				"https://us-central1-triple-odyssey-298019.cloudfunctions.net/color",
-				{
-					params: {
-						album: playingTrack.albumUrl,
-					},
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded",
-					},
-				}
-			)
+			.get(colorEndpoint, {
+				params: {
+					album: playingTrack.albumUrl,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
 			.then((res) => {
 				setColor(res.data.domColor);
 				//console.log(color);
@@ -179,8 +187,15 @@ export default function Dashboard({
 					setSearchResults={setSearchResults}
 					image={image}
 					backgroundColor={backgroundColor}
+					addSong={addSong}
+					setSongAdded={setSongAdded}
 				/>
 			</Container>
+			{songAdded ? (
+				<Success style={{ position: "absolute", bottom: "0" }}></Success>
+			) : (
+				""
+			)}
 			<Container
 				className="d-flex flex-column pt-2 px-1 pb-0"
 				style={{
@@ -227,6 +242,7 @@ export default function Dashboard({
 							setImage={setImage}
 							setLyrics={setLyrics}
 							spotifyApi={spotifyApi}
+							setAddSong={setAddSong}
 						/>
 					</div>
 				</Container>
