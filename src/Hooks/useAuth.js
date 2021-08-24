@@ -46,7 +46,9 @@ export default function useAuth(code) {
 					params: {
 						refreshToken: refreshToken,
 						env:
-							process.env === "production" ? environment.prod : environment.dev,
+							process.env.NODE_ENV === "production"
+								? environment.prod
+								: environment.dev,
 					},
 					headers: {
 						"Content-Type": "application/x-www-form-urlencoded",
