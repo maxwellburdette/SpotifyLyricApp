@@ -29,13 +29,14 @@ export default function Dashboard({
 	const [image, setImage] = useState("");
 	const [addSong, setAddSong] = useState();
 	const [songAdded, setSongAdded] = useState(false);
+	const [currentPlaylist, setCurrentPlaylist] = useState();
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
 	const colorEndpoint = process.env.REACT_APP_COLOR;
 
 	function chooseTrack(track) {
-		setPlayingTrack(track);
+		//setPlayingTrack(track);
 		setAddSong(track);
 		setSearch("");
 		setLyrics("");
@@ -50,6 +51,7 @@ export default function Dashboard({
 
 	useEffect(() => {
 		if (!playingTrack) return;
+		console.log(addSong);
 
 		setImage(playingTrack.bigImage);
 		axios
@@ -81,6 +83,40 @@ export default function Dashboard({
 
 		// eslint-disable-next-line
 	}, [playingTrack]);
+
+	useEffect(() => {
+		if (!addSong) return;
+
+		setImage(addSong.bigImage);
+		axios
+			.get(lyricsEndpoint, {
+				params: {
+					track: addSong.title,
+					artist: addSong.artist,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
+			.then((res) => {
+				setLyrics(res.data.lyrics);
+			});
+		axios
+			.get(colorEndpoint, {
+				params: {
+					album: addSong.albumUrl,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
+			.then((res) => {
+				setColor(res.data.domColor);
+				//console.log(color);
+			});
+
+		// eslint-disable-next-line
+	}, [addSong]);
 
 	useEffect(() => {
 		setBackgroundColor(
@@ -189,6 +225,7 @@ export default function Dashboard({
 					backgroundColor={backgroundColor}
 					addSong={addSong}
 					setSongAdded={setSongAdded}
+					setCurrentPlaylist={setCurrentPlaylist}
 				/>
 			</Container>
 			{songAdded ? (
@@ -218,6 +255,8 @@ export default function Dashboard({
 							track={track}
 							key={track.uri}
 							chooseTrack={chooseTrack}
+							currentPlaylist={currentPlaylist}
+							accessToken={accessToken}
 						/>
 					))}
 					{searchResults.length === 0 && (
