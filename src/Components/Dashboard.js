@@ -21,7 +21,6 @@ export default function Dashboard({
 	const accessToken = useAuth(code);
 	const [search, setSearch] = useState("");
 	const [searchResults, setSearchResults] = useState([]);
-	const [playingTrack, setPlayingTrack] = useState();
 	const [lyrics, setLyrics] = useState("");
 	const [user, setUser] = useState("");
 	const [playlists, setPlaylists] = useState([]);
@@ -29,16 +28,17 @@ export default function Dashboard({
 	const [image, setImage] = useState("");
 	const [addSong, setAddSong] = useState();
 	const [songAdded, setSongAdded] = useState(false);
+	const [currentPlaylist, setCurrentPlaylist] = useState();
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
 	const colorEndpoint = process.env.REACT_APP_COLOR;
 
 	function chooseTrack(track) {
-		setPlayingTrack(track);
 		setAddSong(track);
 		setSearch("");
 		setLyrics("");
+		setCurrentPlaylist("");
 		setSearchResults([]);
 	}
 
@@ -49,14 +49,14 @@ export default function Dashboard({
 	}, [songAdded]);
 
 	useEffect(() => {
-		if (!playingTrack) return;
+		if (!addSong) return;
 
-		setImage(playingTrack.bigImage);
+		setImage(addSong.bigImage);
 		axios
 			.get(lyricsEndpoint, {
 				params: {
-					track: playingTrack.title,
-					artist: playingTrack.artist,
+					track: addSong.title,
+					artist: addSong.artist,
 				},
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -68,7 +68,7 @@ export default function Dashboard({
 		axios
 			.get(colorEndpoint, {
 				params: {
-					album: playingTrack.albumUrl,
+					album: addSong.albumUrl,
 				},
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -76,11 +76,10 @@ export default function Dashboard({
 			})
 			.then((res) => {
 				setColor(res.data.domColor);
-				//console.log(color);
 			});
 
 		// eslint-disable-next-line
-	}, [playingTrack]);
+	}, [addSong]);
 
 	useEffect(() => {
 		setBackgroundColor(
@@ -136,6 +135,7 @@ export default function Dashboard({
 						uri: track.uri,
 						albumUrl: smallestAlbumImage.url,
 						bigImage: biggestAlbumImage.url,
+						albumUri: track.album.uri,
 					};
 				})
 			);
@@ -189,6 +189,7 @@ export default function Dashboard({
 					backgroundColor={backgroundColor}
 					addSong={addSong}
 					setSongAdded={setSongAdded}
+					setCurrentPlaylist={setCurrentPlaylist}
 				/>
 			</Container>
 			{songAdded ? (
@@ -218,6 +219,8 @@ export default function Dashboard({
 							track={track}
 							key={track.uri}
 							chooseTrack={chooseTrack}
+							currentPlaylist={currentPlaylist}
+							accessToken={accessToken}
 						/>
 					))}
 					{searchResults.length === 0 && (
@@ -237,10 +240,6 @@ export default function Dashboard({
 					<div className="mb-2">
 						<Player
 							accessToken={accessToken}
-							trackUri={playingTrack?.uri}
-							setColor={setColor}
-							setImage={setImage}
-							setLyrics={setLyrics}
 							spotifyApi={spotifyApi}
 							setAddSong={setAddSong}
 						/>

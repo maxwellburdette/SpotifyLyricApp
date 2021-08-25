@@ -1,8 +1,50 @@
 import React from "react";
+import axios from "axios";
 
-export default function TrackSearchResult({ track, chooseTrack }) {
+export default function TrackSearchResult({
+	track,
+	chooseTrack,
+	currentPlaylist,
+	accessToken,
+}) {
 	function handlePlay() {
 		chooseTrack(track);
+		//Make case for when there is no playlist to play from
+		let data;
+		if (!currentPlaylist) {
+			data = JSON.stringify({
+				context_uri: track.albumUri,
+				offset: {
+					uri: track.uri,
+				},
+				position_ms: 0,
+			});
+		} else {
+			data = JSON.stringify({
+				context_uri: currentPlaylist,
+				offset: { uri: track.uri },
+				position_ms: 0,
+			});
+		}
+
+		var config = {
+			method: "put",
+			url: "https://api.spotify.com/v1/me/player/play",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer " + accessToken,
+			},
+			data: data,
+		};
+
+		axios(config)
+			.then(function (response) {
+				//console.log(JSON.stringify(response.data));
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
 	}
 	return (
 		<div

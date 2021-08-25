@@ -11,6 +11,7 @@ export default function SideBar({
 	backgroundColor,
 	addSong,
 	setSongAdded,
+	setCurrentPlaylist,
 }) {
 	useEffect(() => {
 		if (!image) return;
@@ -20,6 +21,7 @@ export default function SideBar({
 		let playlistId = e.target.value;
 		spotifyApi.getPlaylist(playlistId).then(
 			function (data) {
+				setCurrentPlaylist(data.body.uri);
 				setSearchResults(
 					data.body.tracks.items.map((track) => {
 						const smallestAlbumImage = track.track.album.images.reduce(
