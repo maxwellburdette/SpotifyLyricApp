@@ -21,7 +21,6 @@ export default function Dashboard({
 	const accessToken = useAuth(code);
 	const [search, setSearch] = useState("");
 	const [searchResults, setSearchResults] = useState([]);
-	const [playingTrack, setPlayingTrack] = useState();
 	const [lyrics, setLyrics] = useState("");
 	const [user, setUser] = useState("");
 	const [playlists, setPlaylists] = useState([]);
@@ -36,7 +35,6 @@ export default function Dashboard({
 	const colorEndpoint = process.env.REACT_APP_COLOR;
 
 	function chooseTrack(track) {
-		//setPlayingTrack(track);
 		setAddSong(track);
 		setSearch("");
 		setLyrics("");
@@ -49,41 +47,6 @@ export default function Dashboard({
 			setSongAdded(false);
 		}, 5000);
 	}, [songAdded]);
-
-	useEffect(() => {
-		if (!playingTrack) return;
-		console.log(addSong);
-
-		setImage(playingTrack.bigImage);
-		axios
-			.get(lyricsEndpoint, {
-				params: {
-					track: playingTrack.title,
-					artist: playingTrack.artist,
-				},
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-			})
-			.then((res) => {
-				setLyrics(res.data.lyrics);
-			});
-		axios
-			.get(colorEndpoint, {
-				params: {
-					album: playingTrack.albumUrl,
-				},
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-			})
-			.then((res) => {
-				setColor(res.data.domColor);
-				//console.log(color);
-			});
-
-		// eslint-disable-next-line
-	}, [playingTrack]);
 
 	useEffect(() => {
 		if (!addSong) return;
@@ -113,7 +76,6 @@ export default function Dashboard({
 			})
 			.then((res) => {
 				setColor(res.data.domColor);
-				//console.log(color);
 			});
 
 		// eslint-disable-next-line
@@ -278,10 +240,6 @@ export default function Dashboard({
 					<div className="mb-2">
 						<Player
 							accessToken={accessToken}
-							trackUri={playingTrack?.uri}
-							setColor={setColor}
-							setImage={setImage}
-							setLyrics={setLyrics}
 							spotifyApi={spotifyApi}
 							setAddSong={setAddSong}
 						/>

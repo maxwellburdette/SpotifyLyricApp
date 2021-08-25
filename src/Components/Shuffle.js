@@ -15,9 +15,7 @@ export default function Shuffle(params) {
 	}
 	function setShuffleMode(bool) {
 		spotifyApi.setShuffle(bool).then(
-			function () {
-				console.log("Shuffle is toggled");
-			},
+			function () {},
 			function (err) {
 				//if the user making the request is non-premium, a 403 FORBIDDEN response code will be returned
 				console.log("Something went wrong!", err);

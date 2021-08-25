@@ -19,7 +19,9 @@ export default function useAuth(code) {
 				params: {
 					code: code,
 					env:
-						process.env.NODE_ENV === "production" ? environment.prod : environment.dev,
+						process.env.NODE_ENV === "production"
+							? environment.prod
+							: environment.dev,
 				},
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
@@ -63,6 +65,7 @@ export default function useAuth(code) {
 					// console.log(err);
 				});
 		}, (expiresIn - 60) * 1000);
+
 		return () => clearInterval(internal);
 		// eslint-disable-next-line
 	}, [refreshToken, expiresIn]);
