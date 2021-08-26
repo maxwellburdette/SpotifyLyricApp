@@ -11,7 +11,7 @@ export default function Player({ accessToken, spotifyApi, setAddSong }) {
 	const player = useRef();
 	useEffect(() => {
 		if (!state) return;
-		if (state.deviceId === state.currentDeviceId) {
+		if (state.deviceId === state.currentDeviceId && state.isActive) {
 			const track = state.track;
 			if (!currentlyPlaying) {
 				setCurrentlyPlaying(state.track);
