@@ -3,11 +3,6 @@
 	"name": "Spotify Lyric Application",
 	"icons": [
 		{
-			"src": "favicon.ico",
-			"sizes": "64x64 32x32 24x24 16x16",
-			"type": "image/x-icon"
-		},
-		{
 			"src": "Spotify_Icon_RGB_Green.png",
 			"type": "image/png",
 			"sizes": "512x512"
