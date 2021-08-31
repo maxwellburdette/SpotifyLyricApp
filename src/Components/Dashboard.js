@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useAuth from "../Hooks/useAuth";
 import TrackSearchResult from "./TrackSearchResult";
 import Player from "./Player";
@@ -29,6 +29,7 @@ export default function Dashboard({
 	const [addSong, setAddSong] = useState();
 	const [songAdded, setSongAdded] = useState(false);
 	const [currentPlaylist, setCurrentPlaylist] = useState();
+	const title = useRef(document.getElementById("title"));
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
@@ -50,6 +51,8 @@ export default function Dashboard({
 
 	useEffect(() => {
 		if (!addSong) return;
+
+		title.current.innerHTML = addSong.title;
 
 		setImage(addSong.bigImage);
 		axios
