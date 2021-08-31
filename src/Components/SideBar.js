@@ -55,12 +55,19 @@ export default function SideBar({
 	}
 
 	return (
-		<div className="d-flex flex-column justify-content-stretch position-relative">
+		<div
+			className="d-flex flex-column justify-content-stretch position-relative"
+			style={{ height: "100vh" }}
+		>
 			<ListGroup
 				className=" justify-content-top"
 				style={{
 					overflowY: "auto",
+<<<<<<< Updated upstream
 					height: "50vh",
+=======
+					height: "60%",
+>>>>>>> Stashed changes
 				}}
 			>
 				<h2
@@ -104,10 +111,10 @@ export default function SideBar({
 				))}
 			</ListGroup>
 			<ListGroup
-				className="d-flex align-items-center justify-content-center"
+				className="d-flex align-items-center justify-content-center position-relative"
 				style={{
-					overflowY: "auto",
-					minHeight: "10vh",
+					overflowY: "hidden",
+					height: "40%",
 				}}
 			>
 				<ListGroup.Item
@@ -116,25 +123,26 @@ export default function SideBar({
 						background: "none",
 						border: "none",
 						maxWidth: "300px",
+						minHeight: "200px",
 					}}
 				>
 					<Image className="shadow" src={image} fluid />
 				</ListGroup.Item>
-				<Container
-					className="p-2 d-flex justify-content-center "
-					style={{
-						background: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
-					}}
-				>
-					<AddSong
-						className=""
-						addSong={addSong}
-						playlists={playlists}
-						spotifyApi={spotifyApi}
-						setSongAdded={setSongAdded}
-					></AddSong>
-				</Container>
 			</ListGroup>
+			<Container
+				className="p-2 d-flex justify-content-center position-relative"
+				style={{
+					background: "linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
+				}}
+			>
+				<AddSong
+					className=""
+					addSong={addSong}
+					playlists={playlists}
+					spotifyApi={spotifyApi}
+					setSongAdded={setSongAdded}
+				></AddSong>
+			</Container>
 		</div>
 	);
 }

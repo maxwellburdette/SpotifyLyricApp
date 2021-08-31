@@ -9,7 +9,7 @@ export default function AddSong(params) {
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 	return (
-		<div>
+		<div className="position-relative">
 			<button className="button" onClick={handleShow}>
 				Add to playlist
 			</button>
