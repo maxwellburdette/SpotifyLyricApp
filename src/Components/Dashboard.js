@@ -52,7 +52,7 @@ export default function Dashboard({
 	useEffect(() => {
 		if (!addSong) return;
 
-		title.current.innerHTML = addSong.title;
+		title.current.innerHTML = addSong.title + " • " + addSong.artist;
 
 		setImage(addSong.bigImage);
 		axios
