@@ -63,11 +63,11 @@ export default function SideBar({
 				className=" justify-content-top"
 				style={{
 					overflowY: "auto",
-<<<<<<< Updated upstream
+
 					height: "50vh",
-=======
+
 					height: "60%",
->>>>>>> Stashed changes
+
 				}}
 			>
 				<h2
