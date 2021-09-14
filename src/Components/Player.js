@@ -3,7 +3,12 @@ import SpotifyPlayer from "react-spotify-web-playback";
 import Shuffle from "./Shuffle";
 import axios from "axios";
 
-export default function Player({ accessToken, spotifyApi, setAddSong }) {
+export default function Player({
+	accessToken,
+	spotifyApi,
+	setAddSong,
+	setImageLoading,
+}) {
 	const [state, setState] = useState();
 	const [currentlyPlaying, setCurrentlyPlaying] = useState();
 	const [currentDevice, setCurrentDevice] = useState();
@@ -102,6 +107,7 @@ export default function Player({ accessToken, spotifyApi, setAddSong }) {
 
 	useEffect(() => {
 		setAddSong(track);
+		setImageLoading(true);
 		// eslint-disable-next-line
 	}, [track]);
 
