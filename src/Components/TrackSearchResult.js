@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-
+import { Slide } from "@material-ui/core";
 export default function TrackSearchResult({
 	track,
 	chooseTrack,
@@ -47,27 +47,29 @@ export default function TrackSearchResult({
 			});
 	}
 	return (
-		<div
-			className="d-flex m-2 align-items-center"
-			style={{
-				cursor: "pointer",
-				backgroundColor: "white",
-				borderRadius: "5px",
-				overflow: "hidden",
-			}}
-			onClick={handlePlay}
-		>
-			<img
-				src={track.albumUrl}
-				alt=""
-				style={{ height: "64px", width: "64px" }}
-			/>
-			<div className="ml-3 ">
-				<div>{track.title}</div>
-				<div className="text-muted" style={{ fontWeight: "300" }}>
-					{track.artist}
+		<Slide direction="up" in={true} timeout={300} mountOnEnter unmountOnExit>
+			<div
+				className="d-flex m-2 align-items-center"
+				style={{
+					cursor: "pointer",
+					backgroundColor: "white",
+					borderRadius: "5px",
+					overflow: "hidden",
+				}}
+				onClick={handlePlay}
+			>
+				<img
+					src={track.albumUrl}
+					alt=""
+					style={{ height: "64px", width: "64px" }}
+				/>
+				<div className="ml-3 ">
+					<div>{track.title}</div>
+					<div className="text-muted" style={{ fontWeight: "300" }}>
+						{track.artist}
+					</div>
 				</div>
 			</div>
-		</div>
+		</Slide>
 	);
 }

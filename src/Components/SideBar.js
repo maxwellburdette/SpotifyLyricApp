@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { ListGroup, Image, Container } from "react-bootstrap";
 import "./sidebar.css";
 import AddSong from "./AddSong";
+import { Grow } from "@material-ui/core";
 export default function SideBar({
 	user,
 	playlists,
@@ -12,6 +13,7 @@ export default function SideBar({
 	addSong,
 	setSongAdded,
 	setCurrentPlaylist,
+	imageLoading,
 }) {
 	useEffect(() => {
 		if (!image) return;
@@ -122,7 +124,9 @@ export default function SideBar({
 						minHeight: "200px",
 					}}
 				>
-					<Image className="shadow" src={image} fluid />
+					<Grow in={!imageLoading} exit={false}>
+						<Image className="shadow" src={image} fluid />
+					</Grow>
 				</ListGroup.Item>
 			</ListGroup>
 			<Container

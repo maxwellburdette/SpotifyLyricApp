@@ -8,6 +8,8 @@ import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import "../App.css";
 import Success from "./Success";
+import logo from "../Spotify_Icon_RGB_White.png";
+import { Grow } from "@material-ui/core";
 
 const spotifyApi = new SpotifyWebApi({
 	clientId: process.env.REACT_APP_PROD_ID || process.env.PROD_ID,
@@ -25,10 +27,12 @@ export default function Dashboard({
 	const [user, setUser] = useState("");
 	const [playlists, setPlaylists] = useState([]);
 	const [color, setColor] = useState([]);
-	const [image, setImage] = useState("");
+	const [image, setImage] = useState(logo);
 	const [addSong, setAddSong] = useState();
 	const [songAdded, setSongAdded] = useState(false);
 	const [currentPlaylist, setCurrentPlaylist] = useState();
+	const [loading, setLoading] = useState(false);
+	const [imageLoading, setImageLoading] = useState(false);
 	const title = useRef(document.getElementById("title"));
 
 	//API
@@ -51,35 +55,7 @@ export default function Dashboard({
 
 	useEffect(() => {
 		if (!addSong) return;
-
-		title.current.innerHTML = addSong.title + " • " + addSong.artist;
-
-		setImage(addSong.bigImage);
-		axios
-			.get(lyricsEndpoint, {
-				params: {
-					track: addSong.title,
-					artist: addSong.artist,
-				},
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-			})
-			.then((res) => {
-				setLyrics(res.data.lyrics);
-			});
-		axios
-			.get(colorEndpoint, {
-				params: {
-					album: addSong.albumUrl,
-				},
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-			})
-			.then((res) => {
-				setColor(res.data.domColor);
-			});
+		updateDashboard();
 
 		// eslint-disable-next-line
 	}, [addSong]);
@@ -113,7 +89,6 @@ export default function Dashboard({
 	useEffect(() => {
 		if (!search) return setSearchResults([]);
 		if (!accessToken) return;
-
 		let cancel = false;
 		spotifyApi.searchTracks(search).then((res) => {
 			if (cancel) return;
@@ -147,6 +122,47 @@ export default function Dashboard({
 		return () => (cancel = true);
 	}, [search, accessToken]);
 
+	function updateDashboard() {
+		title.current.innerHTML = addSong.title + " • " + addSong.artist;
+		const currentSong = addSong.uri;
+		setLoading(true);
+
+		if (currentSong !== addSong.uri) {
+			updateDashboard();
+			return;
+		}
+		setImage(addSong.bigImage);
+		setTimeout(() => {
+			setImageLoading(false);
+		}, 200);
+
+		axios
+			.get(lyricsEndpoint, {
+				params: {
+					track: addSong.title,
+					artist: addSong.artist,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
+			.then(async (res) => {
+				await setLyrics(res.data.lyrics);
+				setLoading(false);
+			});
+		axios
+			.get(colorEndpoint, {
+				params: {
+					album: addSong.albumUrl,
+				},
+				headers: {
+					"Content-Type": "application/x-www-form-urlencoded",
+				},
+			})
+			.then((res) => {
+				setColor(res.data.domColor);
+			});
+	}
 	function getUser() {
 		spotifyApi.getMe().then(
 			function (data) {
@@ -193,6 +209,7 @@ export default function Dashboard({
 					addSong={addSong}
 					setSongAdded={setSongAdded}
 					setCurrentPlaylist={setCurrentPlaylist}
+					imageLoading={imageLoading}
 				/>
 			</Container>
 			{songAdded ? (
@@ -216,6 +233,7 @@ export default function Dashboard({
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
 				></Form.Control>
+
 				<div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
 					{searchResults.map((track) => (
 						<TrackSearchResult
@@ -227,24 +245,28 @@ export default function Dashboard({
 						/>
 					))}
 					{searchResults.length === 0 && (
-						<div
-							className="text-center "
-							style={{
-								whiteSpace: "pre",
-								backgroundColor: "white",
-								borderRadius: "5px",
-							}}
-						>
-							{lyrics}
-						</div>
+						<Grow in={!loading} exit={false}>
+							<div
+								className={`text-center ${loading ? "skeleton" : ""}`}
+								style={{
+									whiteSpace: "pre",
+									backgroundColor: "white",
+									borderRadius: "5px",
+								}}
+							>
+								{!loading ? lyrics : ""}
+							</div>
+						</Grow>
 					)}
 				</div>
+
 				<Container fluid>
 					<div className="mb-2">
 						<Player
 							accessToken={accessToken}
 							spotifyApi={spotifyApi}
 							setAddSong={setAddSong}
+							setImageLoading={setImageLoading}
 						/>
 					</div>
 				</Container>
