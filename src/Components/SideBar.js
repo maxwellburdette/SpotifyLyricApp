@@ -78,7 +78,7 @@ export default function SideBar({
 						width: "100%",
 					}}
 				>
-					{user}
+					{user ? user.display_name : ""}
 					<br />
 					<span
 						className="ml-2 mt-2"

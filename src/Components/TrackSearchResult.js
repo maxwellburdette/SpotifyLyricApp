@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { Slide } from "@material-ui/core";
+import { Slide, Fade } from "@material-ui/core";
+import { Button } from "react-bootstrap";
 export default function TrackSearchResult({
 	track,
 	chooseTrack,
 	currentPlaylist,
 	accessToken,
 }) {
+	const [context, setContext] = useState(false);
 	function handlePlay() {
+		if (context) return;
 		chooseTrack(track);
 		//Make case for when there is no playlist to play from
 		let data;
@@ -46,18 +49,71 @@ export default function TrackSearchResult({
 				console.log(error);
 			});
 	}
+	function rightClick(e) {
+		e.preventDefault();
+		setContext(!context);
+		console.log("Right click");
+	}
+	function addToQueue() {
+		setContext(!context);
+		console.log(track);
+		var config = {
+			method: "post",
+			url: `https://api.spotify.com/v1/me/player/queue?uri=${track.uri}`,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer " + accessToken,
+			},
+		};
+		axios(config)
+			.then(function (response) {
+				//console.log(JSON.stringify(response.data));
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}
 	return (
-		<Slide direction="up" in={true} timeout={300} mountOnEnter unmountOnExit>
+		<Slide direction="up" in={true} out={false} timeout={300}>
 			<div
-				className="d-flex m-2 align-items-center"
+				className="d-flex m-2 align-items-center position-relative"
 				style={{
 					cursor: "pointer",
 					backgroundColor: "white",
 					borderRadius: "5px",
 					overflow: "hidden",
+					// pointerEvents: context ? "none" : "",
 				}}
 				onClick={handlePlay}
+				onContextMenu={rightClick}
 			>
+				<Slide
+					direction="right"
+					in={context}
+					exit={!context}
+					mountOnEnter
+					unmountOnExit
+				>
+					<div
+						className="d-flex justify-content-center align-items-center position-absolute"
+						style={{
+							backgroundColor: "#111",
+							width: "50%",
+							height: "100px",
+							position: "relative",
+							zIndex: 1000,
+							// pointerEvents: context ? "none" : "",
+						}}
+					>
+						<Fade in={context}>
+							<Button onClick={addToQueue} className="btn-success">
+								Add to Queue
+							</Button>
+						</Fade>
+					</div>
+				</Slide>
+
 				<img
 					src={track.albumUrl}
 					alt=""

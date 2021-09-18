@@ -24,7 +24,7 @@ export default function Dashboard({
 	const [search, setSearch] = useState("");
 	const [searchResults, setSearchResults] = useState([]);
 	const [lyrics, setLyrics] = useState("");
-	const [user, setUser] = useState("");
+	const [user, setUser] = useState();
 	const [playlists, setPlaylists] = useState([]);
 	const [color, setColor] = useState([]);
 	const [image, setImage] = useState(logo);
@@ -83,7 +83,7 @@ export default function Dashboard({
 		if (!accessToken) return;
 		spotifyApi.setAccessToken(accessToken);
 		getUser();
-		getPlaylists();
+		//getPlaylists();
 	}, [accessToken]);
 
 	useEffect(() => {
@@ -166,7 +166,7 @@ export default function Dashboard({
 	function getUser() {
 		spotifyApi.getMe().then(
 			function (data) {
-				setUser(data.body.display_name);
+				setUser(data.body);
 			},
 			function (err) {
 				console.log("Something went wrong!", err);
@@ -174,8 +174,9 @@ export default function Dashboard({
 		);
 	}
 
-	function getPlaylists() {
-		spotifyApi.getUserPlaylists("1256157461").then(
+	useEffect(() => {
+		if (!user) return;
+		spotifyApi.getUserPlaylists(user.id).then(
 			function (data) {
 				setPlaylists(data.body.items);
 			},
@@ -183,7 +184,7 @@ export default function Dashboard({
 				console.log("Something went wrong!", err);
 			}
 		);
-	}
+	}, [user]);
 
 	return (
 		<Container
