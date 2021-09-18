@@ -10,10 +10,14 @@ function App() {
 	const [backgroundColor, setBackgroundColor] = useState("");
 	const appRef = useRef();
 	const [transition, setTransition] = useState(true);
-	useEffect(() => {
-		if (!backgroundColor) return;
-		setTransition(!transition);
-	}, [backgroundColor]);
+	useEffect(
+		() => {
+			if (!backgroundColor) return;
+			setTransition(!transition);
+		},
+		//eslint-disable-next-line
+		[backgroundColor]
+	);
 
 	return (
 		<Fade in={true}>

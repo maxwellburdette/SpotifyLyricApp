@@ -174,7 +174,8 @@ export default function Dashboard({
 		);
 	}
 
-	function getPlaylists() {
+	useEffect(() => {
+		if (!user) return;
 		spotifyApi.getUserPlaylists(user.id).then(
 			function (data) {
 				setPlaylists(data.body.items);
@@ -183,7 +184,7 @@ export default function Dashboard({
 				console.log("Something went wrong!", err);
 			}
 		);
-	}
+	}, [user]);
 
 	return (
 		<Container
