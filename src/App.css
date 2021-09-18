@@ -4,6 +4,10 @@
 	height: 100px;
 }
 
+.backgroundElement {
+	transition: 0.5s;
+}
+
 @keyframes skeleton-loading {
 	0% {
 		background-color: hsl(200, 20%, 70%);
