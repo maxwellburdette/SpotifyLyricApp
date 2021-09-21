@@ -34,10 +34,25 @@ export default function Dashboard({
 	const [loading, setLoading] = useState(false);
 	const [imageLoading, setImageLoading] = useState(false);
 	const title = useRef(document.getElementById("title"));
+	const [trackComp, setTrackComp] = useState([]);
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
 	const colorEndpoint = process.env.REACT_APP_COLOR;
+
+	function pageClick() {
+		contextOff();
+	}
+
+	function contextOff() {
+		trackComp.forEach((func) => {
+			func();
+		});
+	}
+
+	function setRefs(ref) {
+		setTrackComp((prev) => [...prev, ref]);
+	}
 
 	function chooseTrack(track) {
 		setAddSong(track);
@@ -45,6 +60,7 @@ export default function Dashboard({
 		setLyrics("");
 		setCurrentPlaylist("");
 		setSearchResults([]);
+		setTrackComp([]);
 	}
 
 	useEffect(() => {
@@ -191,6 +207,7 @@ export default function Dashboard({
 			className="d-flex p-0 mb-0"
 			style={{ width: "100%", height: "100vh" }}
 			fluid
+			onClick={pageClick}
 		>
 			<Container
 				style={{
@@ -211,6 +228,7 @@ export default function Dashboard({
 					setSongAdded={setSongAdded}
 					setCurrentPlaylist={setCurrentPlaylist}
 					imageLoading={imageLoading}
+					setTrackComp={setTrackComp}
 				/>
 			</Container>
 			{songAdded ? (
@@ -243,6 +261,8 @@ export default function Dashboard({
 							chooseTrack={chooseTrack}
 							currentPlaylist={currentPlaylist}
 							accessToken={accessToken}
+							setRefs={setRefs}
+							contextOff={contextOff}
 						/>
 					))}
 					{searchResults.length === 0 && (
