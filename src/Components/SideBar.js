@@ -9,11 +9,11 @@ export default function SideBar({
 	spotifyApi,
 	setSearchResults,
 	image,
-	backgroundColor,
 	addSong,
 	setSongAdded,
 	setCurrentPlaylist,
 	imageLoading,
+	setTrackComp,
 }) {
 	useEffect(() => {
 		if (!image) return;
@@ -21,6 +21,7 @@ export default function SideBar({
 	function handle(e) {
 		e.preventDefault();
 		let playlistId = e.target.value;
+		setTrackComp([]);
 		spotifyApi.getPlaylist(playlistId).then(
 			function (data) {
 				setCurrentPlaylist(data.body.uri);

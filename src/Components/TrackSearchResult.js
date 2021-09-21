@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Slide, Fade } from "@material-ui/core";
 import { Button } from "react-bootstrap";
@@ -7,6 +7,8 @@ export default function TrackSearchResult({
 	chooseTrack,
 	currentPlaylist,
 	accessToken,
+	setRefs,
+	contextOff,
 }) {
 	const [context, setContext] = useState(false);
 	function handlePlay() {
@@ -51,6 +53,7 @@ export default function TrackSearchResult({
 	}
 	function rightClick(e) {
 		e.preventDefault();
+		contextOff();
 		setContext(!context);
 	}
 	function addToQueue() {
@@ -72,6 +75,12 @@ export default function TrackSearchResult({
 				console.log(error);
 			});
 	}
+	function turnOffContext() {
+		setContext(false);
+	}
+	useEffect(() => {
+		setRefs(turnOffContext);
+	}, []);
 	return (
 		<Slide direction="up" in={true} out={false} timeout={300}>
 			<div
