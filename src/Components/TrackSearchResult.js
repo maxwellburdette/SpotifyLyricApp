@@ -80,6 +80,7 @@ export default function TrackSearchResult({
 	}
 	useEffect(() => {
 		setRefs(turnOffContext);
+		// eslint-disable-next-line
 	}, []);
 	return (
 		<Slide direction="up" in={true} out={false} timeout={300}>
