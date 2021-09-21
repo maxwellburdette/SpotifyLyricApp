@@ -52,11 +52,9 @@ export default function TrackSearchResult({
 	function rightClick(e) {
 		e.preventDefault();
 		setContext(!context);
-		console.log("Right click");
 	}
 	function addToQueue() {
 		setContext(!context);
-		console.log(track);
 		var config = {
 			method: "post",
 			url: `https://api.spotify.com/v1/me/player/queue?uri=${track.uri}`,

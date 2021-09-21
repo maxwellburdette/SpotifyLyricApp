@@ -77,18 +77,28 @@ export default function Player({
 	useEffect(() => {
 		if (!currentlyPlaying) return;
 
-		spotifyApi
-			.searchTracks(currentlyPlaying.name + " " + currentlyPlaying.artists)
-			.then((res) => {
-				const track = res.body.tracks.items[0];
-				if (!track) return;
-				const biggestAlbumImage = track.album.images.reduce(
-					(largest, image) => {
-						if (image.height > largest.height) return image;
-						return largest;
-					}
-				);
-				const smallestImage = track.album.images.reduce((smallest, image) => {
+		var axios = require("axios");
+
+		var config = {
+			method: "get",
+			url: `https://api.spotify.com/v1/tracks/${currentlyPlaying.id}`,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${accessToken}`,
+			},
+		};
+
+		axios(config)
+			.then(function (res) {
+				const images = res.data.album.images;
+				const track = res.data;
+				const biggestAlbumImage = images.reduce((largest, image) => {
+					if (image.height > largest.height) return image;
+					return largest;
+				});
+
+				const smallestImage = images.reduce((smallest, image) => {
 					if (image.height < smallest.height) return image;
 					return smallest;
 				});
@@ -100,6 +110,9 @@ export default function Player({
 					albumUrl: smallestImage.url,
 					bigImage: biggestAlbumImage.url,
 				});
+			})
+			.catch(function (error) {
+				console.log(error);
 			});
 
 		// eslint-disable-next-line
