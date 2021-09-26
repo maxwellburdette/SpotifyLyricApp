@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
 import Shuffle from "./Shuffle";
+import SongQueue from "../Components/SongQueue";
 import axios from "axios";
 
 export default function Player({
@@ -8,12 +9,36 @@ export default function Player({
 	spotifyApi,
 	setAddSong,
 	setImageLoading,
+	setToggleQueue,
 }) {
 	const [state, setState] = useState();
 	const [currentlyPlaying, setCurrentlyPlaying] = useState();
 	const [currentDevice, setCurrentDevice] = useState();
 	const [track, setTrack] = useState();
-	const player = useRef();
+	const [player, setPlayer] = useState();
+	// function loadSpotifyPlayer() {
+	// 	return new Promise((resolve, reject) => {
+	// 		const scriptTag = document.getElementById("spotify-player");
+
+	// 		if (!scriptTag) {
+	// 			const script = document.createElement("script");
+
+	// 			script.id = "spotify-player";
+	// 			script.type = "text/javascript";
+	// 			script.async = false;
+	// 			script.defer = true;
+	// 			script.src = "https://sdk.scdn.co/spotify-player.js";
+	// 			script.onload = () => resolve();
+	// 			script.onerror = (error: any) =>
+	// 				reject(new Error(`loadScript: ${error.message}`));
+
+	// 			document.head.appendChild(script);
+	// 		} else {
+	// 			resolve();
+	// 		}
+	// 	});
+	// }
+
 	useEffect(() => {
 		if (!state) return;
 		if (state.deviceId === state.currentDeviceId && state.isActive) {
@@ -127,7 +152,7 @@ export default function Player({
 	if (!accessToken) return null;
 	return (
 		<div style={{ position: "relative" }}>
-			<SpotifyPlayer
+			{/* <SpotifyPlayer
 				ref={player}
 				token={accessToken}
 				showSaveIcon
@@ -135,7 +160,7 @@ export default function Player({
 					setState(state);
 				}}
 				syncExternalDevice={true}
-				persistDeviceSelection={true}
+				//persistDeviceSelection={true}
 				styles={{
 					activeColor: "#fff",
 					bgColor: "#333",
@@ -146,8 +171,10 @@ export default function Player({
 					trackNameColor: "#fff",
 				}}
 				magnifySliderOnHover="true"
+				initialVolume={0.5}
 			/>
 			<Shuffle spotifyApi={spotifyApi}></Shuffle>
+			<SongQueue setToggleQueue={setToggleQueue}></SongQueue> */}
 		</div>
 	);
 }

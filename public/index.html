@@ -25,6 +25,31 @@
 		<title id="title">Spotify</title>
 	</head>
 	<body>
+		<script src="https://sdk.scdn.co/spotify-player.js" defer></script>
+		<script>
+			let player;
+			window.onSpotifyWebPlaybackSDKReady = () => {
+				const token =
+					"BQASzFw1bjzGQXM8rq5LI5nIM2Wwb1prfkapFYUVD466bF-FeGbCxiQfg8DbQjLNE0UFPYK-cyWkEvdfPyelAncWnOfaPYgUAYWQoHb7mpNNkqNSXXOcUDp1Wqa5dDFyK_tZkQLeHyqIeS_aBUT0PPAIl0Y0M4y4suTl3Z68X0kqJ1_dKWz3V1053Xzn7nsk0dluzQGC_X9J3cNYS5ee_my6_CHbIQ";
+				player = new Spotify.Player({
+					name: "Lyrics Player",
+					getOAuthToken: (cb) => {
+						cb(token);
+					},
+				});
+				// Ready
+				player.addListener("ready", ({ device_id }) => {
+					console.log("Ready with Device ID", device_id);
+				});
+
+				// Not Ready
+				player.addListener("not_ready", ({ device_id }) => {
+					console.log("Device ID has gone offline", device_id);
+				});
+				console.log(player);
+				player.connect();
+			};
+		</script>
 		<noscript>You need to enable JavaScript to run this app.</noscript>
 		<div id="root"></div>
 		<!--
