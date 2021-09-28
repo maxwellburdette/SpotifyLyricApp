@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import SpotifyPlayer from "react-spotify-web-playback";
-import Shuffle from "./Shuffle";
-import SongQueue from "../Components/SongQueue";
+import { useState, useEffect } from "react";
+//import SpotifyPlayer from "react-spotify-web-playback";
+//import Shuffle from "./Shuffle";
+//import SongQueue from "../Components/SongQueue";
 import axios from "axios";
+import PlayerSDK from "../SDK's/PlayerSDK";
+import { Container } from "react-bootstrap";
 
 export default function Player({
 	accessToken,
@@ -15,29 +17,8 @@ export default function Player({
 	const [currentlyPlaying, setCurrentlyPlaying] = useState();
 	const [currentDevice, setCurrentDevice] = useState();
 	const [track, setTrack] = useState();
-	const [player, setPlayer] = useState();
-	// function loadSpotifyPlayer() {
-	// 	return new Promise((resolve, reject) => {
-	// 		const scriptTag = document.getElementById("spotify-player");
 
-	// 		if (!scriptTag) {
-	// 			const script = document.createElement("script");
-
-	// 			script.id = "spotify-player";
-	// 			script.type = "text/javascript";
-	// 			script.async = false;
-	// 			script.defer = true;
-	// 			script.src = "https://sdk.scdn.co/spotify-player.js";
-	// 			script.onload = () => resolve();
-	// 			script.onerror = (error: any) =>
-	// 				reject(new Error(`loadScript: ${error.message}`));
-
-	// 			document.head.appendChild(script);
-	// 		} else {
-	// 			resolve();
-	// 		}
-	// 	});
-	// }
+	const [device, setDevice] = useState("");
 
 	useEffect(() => {
 		if (!state) return;
@@ -75,9 +56,8 @@ export default function Player({
 	}, [state]);
 
 	useEffect(() => {
-		if (!currentDevice) return;
 		var data = JSON.stringify({
-			device_ids: [currentDevice],
+			device_ids: [device],
 		});
 
 		var config = {
@@ -97,48 +77,66 @@ export default function Player({
 				console.log(error);
 			});
 		// eslint-disable-next-line
-	}, [currentDevice]);
+	}, [device]);
 
 	useEffect(() => {
 		if (!currentlyPlaying) return;
+		// var config = {
+		// 	method: "get",
+		// 	url: `https://api.spotify.com/v1/tracks/${currentlyPlaying.id}`,
+		// 	headers: {
+		// 		Accept: "application/json",
+		// 		"Content-Type": "application/json",
+		// 		Authorization: `Bearer ${accessToken}`,
+		// 	},
+		// };
 
-		var axios = require("axios");
+		// axios(config)
+		// 	.then(function (res) {
+		// 		const images = res.data.album.images;
+		// 		const track = res.data;
+		// 		const biggestAlbumImage = images.reduce((largest, image) => {
+		// 			if (image.height > largest.height) return image;
+		// 			return largest;
+		// 		});
 
-		var config = {
-			method: "get",
-			url: `https://api.spotify.com/v1/tracks/${currentlyPlaying.id}`,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
-			},
-		};
+		// 		const smallestImage = images.reduce((smallest, image) => {
+		// 			if (image.height < smallest.height) return image;
+		// 			return smallest;
+		// 		});
 
-		axios(config)
-			.then(function (res) {
-				const images = res.data.album.images;
-				const track = res.data;
-				const biggestAlbumImage = images.reduce((largest, image) => {
-					if (image.height > largest.height) return image;
-					return largest;
-				});
+		// 		setTrack({
+		// 			artist: track.artists[0].name,
+		// 			title: track.name,
+		// 			uri: track.uri,
+		// 			albumUrl: smallestImage.url,
+		// 			bigImage: biggestAlbumImage.url,
+		// 		});
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.log(error);
+		// 	});
 
-				const smallestImage = images.reduce((smallest, image) => {
-					if (image.height < smallest.height) return image;
-					return smallest;
-				});
+		const biggestAlbumImage = currentlyPlaying.album.images.reduce(
+			(largest, image) => {
+				if (image.height > largest.height) return image;
+				return largest;
+			}
+		);
+		const smallestImage = currentlyPlaying.album.images.reduce(
+			(smallest, image) => {
+				if (image.height < smallest.height) return image;
+				return smallest;
+			}
+		);
 
-				setTrack({
-					artist: track.artists[0].name,
-					title: track.name,
-					uri: track.uri,
-					albumUrl: smallestImage.url,
-					bigImage: biggestAlbumImage.url,
-				});
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+		setTrack({
+			artist: currentlyPlaying.artists[0].name,
+			title: currentlyPlaying.name,
+			uri: currentlyPlaying.uri,
+			albumUrl: smallestImage.url,
+			bigImage: biggestAlbumImage.url,
+		});
 
 		// eslint-disable-next-line
 	}, [currentlyPlaying]);
@@ -151,8 +149,15 @@ export default function Player({
 
 	if (!accessToken) return null;
 	return (
-		<div style={{ position: "relative" }}>
-			{/* <SpotifyPlayer
+		<Container style={{ border: "1px solid #fff" }} fluid>
+			<PlayerSDK
+				style={{ position: "relative" }}
+				accessToken={accessToken}
+				setDevice={setDevice}
+				setCurrentlyPlaying={setCurrentlyPlaying}
+				track={track}
+			>
+				{/* <SpotifyPlayer
 				ref={player}
 				token={accessToken}
 				showSaveIcon
@@ -175,6 +180,7 @@ export default function Player({
 			/>
 			<Shuffle spotifyApi={spotifyApi}></Shuffle>
 			<SongQueue setToggleQueue={setToggleQueue}></SongQueue> */}
-		</div>
+			</PlayerSDK>
+		</Container>
 	);
 }
