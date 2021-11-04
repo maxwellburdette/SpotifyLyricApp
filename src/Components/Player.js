@@ -145,7 +145,7 @@ export default function Player({
 					trackArtistColor: "#ccc",
 					trackNameColor: "#fff",
 				}}
-				magnifySliderOnHover="true",
+				magnifySliderOnHover={true}
 				initialVolume={0.5}
 			/>
 			<Shuffle spotifyApi={spotifyApi}></Shuffle>
