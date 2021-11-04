@@ -227,6 +227,7 @@ export default function Dashboard({
 					addSong={addSong}
 					setSongAdded={setSongAdded}
 					setCurrentPlaylist={setCurrentPlaylist}
+					currentPlaylist={currentPlaylist}
 					imageLoading={imageLoading}
 					setTrackComp={setTrackComp}
 				/>

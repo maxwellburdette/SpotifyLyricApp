@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ListGroup, Image, Container } from "react-bootstrap";
 import "./sidebar.css";
 import AddSong from "./AddSong";
 import { Grow } from "@material-ui/core";
+import axios from "axios";
+
 export default function SideBar({
 	user,
 	playlists,
@@ -14,48 +16,150 @@ export default function SideBar({
 	setCurrentPlaylist,
 	imageLoading,
 	setTrackComp,
+	accessToken,
 }) {
+	//const [next, setNext] = useState();
+
+	const [offset, setOffset] = useState();
+	const [playlist, setPlaylist] = useState();
 	useEffect(() => {
 		if (!image) return;
 	}, [image]);
 	function handle(e) {
 		e.preventDefault();
 		let playlistId = e.target.value;
+		setCurrentPlaylist(playlistId);
+		setPlaylist(playlistId);
 		setTrackComp([]);
-		spotifyApi.getPlaylist(playlistId).then(
-			function (data) {
-				setCurrentPlaylist(data.body.uri);
-				setSearchResults(
-					data.body.tracks.items.map((track) => {
-						const smallestAlbumImage = track.track.album.images.reduce(
-							(smallest, image) => {
-								if (image.height < smallest.height) return image;
-								return smallest;
-							}
-						);
+		var config = {
+			method: "get",
+			url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks?fields=total`,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${accessToken}`,
+			},
+		};
+		getTotal(config);
+	}
+	function getTotal(config) {
+		axios(config)
+			.then((response) => {
+				let total = response.data.total;
+				if (total < 100) {
+					setOffset(100);
+				} else {
+					setOffset(Math.round(total / 100) * 100);
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}
+	useEffect(() => {
+		if (!offset) return;
+		console.log(offset);
+		var config = {
+			method: "get",
+			url:
+				offset <= 100
+					? `https://api.spotify.com/v1/playlists/${playlist}/tracks`
+					: `https://api.spotify.com/v1/playlists/${playlist}/tracks?offset=${offset}`,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${accessToken}`,
+			},
+		};
 
-						const biggestAlbumImage = track.track.album.images.reduce(
-							(largest, image) => {
-								if (image.height > largest.height) return image;
-								return largest;
-							}
-						);
+		axios(config)
+			.then((response) => {
+				let data = response.data;
+				console.log(data);
+				setSearchResults(
+					data.items.map((payload) => {
+						const track = payload.track;
+						const smallestAlbumImage =
+							track.album.images.length > 1
+								? track.album.images.reduce((smallest, image) => {
+										if (image.height < smallest.height) return image;
+										return smallest;
+								  })
+								: "";
+
+						const biggestAlbumImage =
+							track.album.images.length > 1
+								? track.album.images.reduce((largest, image) => {
+										if (image.height > largest.height) return image;
+										return largest;
+								  })
+								: "";
 
 						return {
-							artist: track.track.artists[0].name,
-							title: track.track.name,
-							uri: track.track.uri,
+							artist: track.artists[0].name,
+							title: track.name,
+							uri: track.uri,
 							albumUrl: smallestAlbumImage.url,
 							bigImage: biggestAlbumImage.url,
 						};
 					})
 				);
-			},
-			function (err) {
-				console.log("Something went wrong!", err);
-			}
-		);
-	}
+				//setNext(data.next !== null ? data.next : undefined);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}, [offset]);
+
+	// useEffect(() => {
+	// 	if (!next) return;
+	// 	var config = {
+	// 		method: "get",
+	// 		url: next,
+	// 		headers: {
+	// 			Accept: "application/json",
+	// 			"Content-Type": "application/json",
+	// 			Authorization: `Bearer ${accessToken}`,
+	// 		},
+	// 	};
+	// 	axios(config).then((res) => {
+	// 		getTrackData(res.data.items);
+	// 		tempTracks.forEach((track) => {
+	// 			setSearchResults((prevState) => [...prevState, track]);
+	// 		});
+	// 		setNext(res.data.next !== null ? res.data.next : null);
+	// 	});
+	// 	// eslint-disable-next-line
+	// }, [next]);
+	//function getTrackData(items) {
+	// setTempTracks(
+	// 	items.map((payload) => {
+	// 		const track = payload.track;
+	// 		const smallestAlbumImage =
+	// 			track.album.images.length > 1
+	// 				? track.album.images.reduce((smallest, image) => {
+	// 						if (image.height < smallest.height) return image;
+	// 						return smallest;
+	// 				  })
+	// 				: "";
+	// 		const biggestAlbumImage =
+	// 			track.album.images.length > 1
+	// 				? track.album.images.reduce((largest, image) => {
+	// 						if (image.height > largest.height) return image;
+	// 						return largest;
+	// 				  })
+	// 				: "";
+	// 		return {
+	// 			key: track.id,
+	// 			artist: track.artists[0].name,
+	// 			title: track.name,
+	// 			uri: track.uri,
+	// 			albumUrl: smallestAlbumImage.url,
+	// 			bigImage: biggestAlbumImage.url,
+	// 		};
+	// 	})
+	// );
+	//}
 
 	return (
 		<div
