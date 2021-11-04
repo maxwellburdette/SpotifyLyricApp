@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProgressBar } from "react-bootstrap";
-import { ms, s, m, h, d } from "time-convert";
 export default function PlayerSDK({
 	accessToken,
 	setDevice,
@@ -21,7 +20,6 @@ export default function PlayerSDK({
 	const [current_track, setTrack] = useState(tempTrack);
 	const [previousTrack, setPreviousTrack] = useState("");
 	const [duration, setDuration] = useState(0);
-	const [durMin, setDurMin] = useState([]);
 	const [position, setPosition] = useState();
 
 	useEffect(() => {
@@ -90,22 +88,17 @@ export default function PlayerSDK({
 		};
 	}, []);
 
-	useEffect(() => {
-		if (!duration) return;
-		setDurMin(ms.to(h, m, s)(duration)); // [4, 2, 47]
-	}, [duration]);
-
 	return (
 		<div
 			style={{ width: "100%", height: "100%" }}
-			className="d-flex justify-content-center align-items-center "
+			className="d-flex justify-content-center align-items-center position-relative"
 		>
 			<ProgressBar now={60} />
 
 			{track ? (
 				<div
 					className="d-flex ml-2 align-items-center position-absolute"
-					style={{ left: 25 }}
+					style={{ left: 0 }}
 				>
 					<img
 						src={track.albumUrl}
