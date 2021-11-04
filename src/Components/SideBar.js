@@ -18,53 +18,75 @@ export default function SideBar({
 	setTrackComp,
 	accessToken,
 }) {
-	//const [next, setNext] = useState();
-
 	const [offset, setOffset] = useState();
 	const [playlist, setPlaylist] = useState();
+	const [next, setNext] = useState();
 	useEffect(() => {
 		if (!image) return;
 	}, [image]);
 	function handle(e) {
 		e.preventDefault();
 		let playlistId = e.target.value;
-		setCurrentPlaylist(playlistId);
+		let total = e.target.id;
+
 		setPlaylist(playlistId);
 		setTrackComp([]);
-		var config = {
-			method: "get",
-			url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks?fields=total`,
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${accessToken}`,
+		// var config = {
+		// 	method: "get",
+		// 	url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks?fields=total`,
+		// 	headers: {
+		// 		Accept: "application/json",
+		// 		"Content-Type": "application/json",
+		// 		Authorization: `Bearer ${accessToken}`,
+		// 	},
+		// };
+		// getTotal(config);
+		spotifyApi.getPlaylist(playlistId).then(
+			function (data) {
+				setCurrentPlaylist(data.body.uri);
+				// setSearchResults(
+				// 	data.body.tracks.items.map((track) => {
+				// 		const smallestAlbumImage = track.track.album.images.reduce(
+				// 			(smallest, image) => {
+				// 				if (image.height < smallest.height) return image;
+				// 				return smallest;
+				// 			}
+				// 		);
+
+				// 		const biggestAlbumImage = track.track.album.images.reduce(
+				// 			(largest, image) => {
+				// 				if (image.height > largest.height) return image;
+				// 				return largest;
+				// 			}
+				// 		);
+
+				// 		return {
+				// 			artist: track.track.artists[0].name,
+				// 			title: track.track.name,
+				// 			uri: track.track.uri,
+				// 			albumUrl: smallestAlbumImage.url,
+				// 			bigImage: biggestAlbumImage.url,
+				// 		};
+				// 	})
+				// );
+				setOffset(Math.round(total / 100) * 100);
 			},
-		};
-		getTotal(config);
+			function (err) {
+				console.log("Something went wrong!", err);
+			}
+		);
 	}
-	function getTotal(config) {
-		axios(config)
-			.then((response) => {
-				let total = response.data.total;
-				if (total < 100) {
-					setOffset(100);
-				} else {
-					setOffset(Math.round(total / 100) * 100);
-				}
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
-	}
+
 	useEffect(() => {
-		if (!offset) return;
+		if (!offset || !playlist) return;
+
 		console.log(offset);
 		var config = {
 			method: "get",
 			url:
-				offset <= 100
-					? `https://api.spotify.com/v1/playlists/${playlist}/tracks`
-					: `https://api.spotify.com/v1/playlists/${playlist}/tracks?offset=${offset}`,
+				offset > 100
+					? `https://api.spotify.com/v1/playlists/${playlist}/tracks?offset=${offset}`
+					: `https://api.spotify.com/v1/playlists/${playlist}/tracks`,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
@@ -75,25 +97,24 @@ export default function SideBar({
 		axios(config)
 			.then((response) => {
 				let data = response.data;
-				console.log(data);
+
 				setSearchResults(
 					data.items.map((payload) => {
 						const track = payload.track;
-						const smallestAlbumImage =
-							track.album.images.length > 1
-								? track.album.images.reduce((smallest, image) => {
-										if (image.height < smallest.height) return image;
-										return smallest;
-								  })
-								: "";
 
-						const biggestAlbumImage =
-							track.album.images.length > 1
-								? track.album.images.reduce((largest, image) => {
-										if (image.height > largest.height) return image;
-										return largest;
-								  })
-								: "";
+						const smallestAlbumImage = track.album.images.reduce(
+							(smallest, image) => {
+								if (image.height < smallest.height) return image;
+								return smallest;
+							}
+						);
+
+						const biggestAlbumImage = track.album.images.reduce(
+							(largest, image) => {
+								if (image.height > largest.height) return image;
+								return largest;
+							}
+						);
 
 						return {
 							artist: track.artists[0].name,
@@ -104,7 +125,7 @@ export default function SideBar({
 						};
 					})
 				);
-				//setNext(data.next !== null ? data.next : undefined);
+				setNext(data.prev !== null ? data.prev : undefined);
 			})
 			.catch(function (error) {
 				console.log(error);
@@ -207,6 +228,7 @@ export default function SideBar({
 						}}
 						onClick={handle}
 						value={playlist.id}
+						id={playlist.tracks.total}
 						action
 					>
 						{playlist.name}
