@@ -3,13 +3,14 @@ import useAuth from "../Hooks/useAuth";
 import TrackSearchResult from "./TrackSearchResult";
 import Player from "./Player";
 import SideBar from "./SideBar";
+import SongQueue from "./SongQueue";
 import { Container, Form } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import "../App.css";
 import Success from "./Success";
 import logo from "../Spotify_Icon_RGB_White.png";
-import { Grow } from "@material-ui/core";
+import { Grow, Fade } from "@material-ui/core";
 
 const spotifyApi = new SpotifyWebApi({
 	clientId: process.env.REACT_APP_PROD_ID || process.env.PROD_ID,
@@ -35,6 +36,12 @@ export default function Dashboard({
 	const [imageLoading, setImageLoading] = useState(false);
 	const title = useRef(document.getElementById("title"));
 	const [trackComp, setTrackComp] = useState([]);
+	const [toggleQueue, setToggleQueue] = useState(false);
+	const [playerSettings, setPlayerSettings] = useState({
+		volume: "",
+		shuffle: true,
+		repeat: true,
+	});
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
@@ -62,6 +69,10 @@ export default function Dashboard({
 		setSearchResults([]);
 		setTrackComp([]);
 	}
+
+	useEffect(() => {
+		if (!playerSettings) return;
+	}, []);
 
 	useEffect(() => {
 		setTimeout(function () {
@@ -237,7 +248,7 @@ export default function Dashboard({
 				""
 			)}
 			<Container
-				className="d-flex flex-column pt-2 px-1 pb-0"
+				className="d-flex flex-column pt-2 px-1 pb-0 position-relative"
 				style={{
 					border: " 1px solid #636262",
 					background: "linear-gradient(rgb(52,52,52,.5), rgb(52,52,52,1)",
@@ -245,6 +256,18 @@ export default function Dashboard({
 					width: "75%",
 				}}
 			>
+				<Fade in={toggleQueue}>
+					<Container
+						className="position-absolute align-self-center"
+						style={{
+							height: "50%",
+							width: "50%",
+							background: "#111",
+							top: "20%",
+							zIndex: "100000",
+						}}
+					></Container>
+				</Fade>
 				<Form.Control
 					type="search"
 					className="p-2"
@@ -252,6 +275,7 @@ export default function Dashboard({
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
 				></Form.Control>
+				<SongQueue></SongQueue>
 
 				<div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
 					{searchResults.map((track) => (
@@ -283,12 +307,17 @@ export default function Dashboard({
 
 				<Container fluid>
 					<div className="mb-2">
-						<Player
-							accessToken={accessToken}
-							spotifyApi={spotifyApi}
-							setAddSong={setAddSong}
-							setImageLoading={setImageLoading}
-						/>
+						{accessToken ? (
+							<Player
+								accessToken={accessToken}
+								spotifyApi={spotifyApi}
+								setAddSong={setAddSong}
+								setImageLoading={setImageLoading}
+								setToggleQueue={setToggleQueue}
+							/>
+						) : (
+							""
+						)}
 					</div>
 				</Container>
 			</Container>
