@@ -48,7 +48,6 @@ export default function SideBar({
 	useEffect(
 		() => {
 			if (!offset || !playlist) return;
-			console.log(offset);
 			var config = {
 				method: "get",
 				url:
@@ -65,33 +64,39 @@ export default function SideBar({
 			axios(config)
 				.then((response) => {
 					let data = response.data;
-
 					setSearchResults(
-						data.items.reverse().map((payload) => {
-							const track = payload.track;
-
-							const smallestAlbumImage = track.album.images.reduce(
-								(smallest, image) => {
-									if (image.height < smallest.height) return image;
-									return smallest;
+						data.items
+							.filter((payload) => {
+								if (payload.track === null) {
+									return false;
 								}
-							);
+								return true;
+							})
+							.reverse()
+							.map((payload) => {
+								const track = payload.track;
+								const smallestAlbumImage = track.album.images.reduce(
+									(smallest, image) => {
+										if (image.height < smallest.height) return image;
+										return smallest;
+									}
+								);
 
-							const biggestAlbumImage = track.album.images.reduce(
-								(largest, image) => {
-									if (image.height > largest.height) return image;
-									return largest;
-								}
-							);
+								const biggestAlbumImage = track.album.images.reduce(
+									(largest, image) => {
+										if (image.height > largest.height) return image;
+										return largest;
+									}
+								);
 
-							return {
-								artist: track.artists[0].name,
-								title: track.name,
-								uri: track.uri,
-								albumUrl: smallestAlbumImage.url,
-								bigImage: biggestAlbumImage.url,
-							};
-						})
+								return {
+									artist: track.artists[0].name,
+									title: track.name,
+									uri: track.uri,
+									albumUrl: smallestAlbumImage.url,
+									bigImage: biggestAlbumImage.url,
+								};
+							})
 					);
 					setNext(data.previous !== null ? data.previous : undefined);
 				})
