@@ -2,7 +2,7 @@
 
 # Production:
 
-https://spotifyplus.netlify.app
+<a href="https://spotifyplus.netlify.app" target="_blank">Spotify App<a/>
 
 ### Features:
 <ul>
