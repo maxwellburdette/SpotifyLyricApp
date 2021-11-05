@@ -17,6 +17,10 @@ export default function SideBar({
 	imageLoading,
 	setTrackComp,
 	accessToken,
+	bottomTrack,
+	setBottomTrack,
+	setTrackLoading,
+	searchResults,
 }) {
 	const [offset, setOffset] = useState();
 	const [playlist, setPlaylist] = useState();
@@ -28,48 +32,12 @@ export default function SideBar({
 		e.preventDefault();
 		let playlistId = e.target.value;
 		let total = e.target.id;
-
 		setPlaylist(playlistId);
 		setTrackComp([]);
-		// var config = {
-		// 	method: "get",
-		// 	url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks?fields=total`,
-		// 	headers: {
-		// 		Accept: "application/json",
-		// 		"Content-Type": "application/json",
-		// 		Authorization: `Bearer ${accessToken}`,
-		// 	},
-		// };
-		// getTotal(config);
 		spotifyApi.getPlaylist(playlistId).then(
 			function (data) {
 				setCurrentPlaylist(data.body.uri);
-				// setSearchResults(
-				// 	data.body.tracks.items.map((track) => {
-				// 		const smallestAlbumImage = track.track.album.images.reduce(
-				// 			(smallest, image) => {
-				// 				if (image.height < smallest.height) return image;
-				// 				return smallest;
-				// 			}
-				// 		);
-
-				// 		const biggestAlbumImage = track.track.album.images.reduce(
-				// 			(largest, image) => {
-				// 				if (image.height > largest.height) return image;
-				// 				return largest;
-				// 			}
-				// 		);
-
-				// 		return {
-				// 			artist: track.track.artists[0].name,
-				// 			title: track.track.name,
-				// 			uri: track.track.uri,
-				// 			albumUrl: smallestAlbumImage.url,
-				// 			bigImage: biggestAlbumImage.url,
-				// 		};
-				// 	})
-				// );
-				setOffset(Math.round(total / 100) * 100);
+				setOffset(total < 100 ? total : Math.round(total / 100) * 100);
 			},
 			function (err) {
 				console.log("Something went wrong!", err);
@@ -77,111 +45,123 @@ export default function SideBar({
 		);
 	}
 
-	useEffect(() => {
-		if (!offset || !playlist) return;
+	useEffect(
+		() => {
+			if (!offset || !playlist) return;
+			console.log(offset);
+			var config = {
+				method: "get",
+				url:
+					offset > 100
+						? `https://api.spotify.com/v1/playlists/${playlist}/tracks?offset=${offset}`
+						: `https://api.spotify.com/v1/playlists/${playlist}/tracks`,
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+			};
 
-		console.log(offset);
+			axios(config)
+				.then((response) => {
+					let data = response.data;
+
+					setSearchResults(
+						data.items.reverse().map((payload) => {
+							const track = payload.track;
+
+							const smallestAlbumImage = track.album.images.reduce(
+								(smallest, image) => {
+									if (image.height < smallest.height) return image;
+									return smallest;
+								}
+							);
+
+							const biggestAlbumImage = track.album.images.reduce(
+								(largest, image) => {
+									if (image.height > largest.height) return image;
+									return largest;
+								}
+							);
+
+							return {
+								artist: track.artists[0].name,
+								title: track.name,
+								uri: track.uri,
+								albumUrl: smallestAlbumImage.url,
+								bigImage: biggestAlbumImage.url,
+							};
+						})
+					);
+					setNext(data.previous !== null ? data.previous : undefined);
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		},
+		// eslint-disable-next-line
+		[offset]
+	);
+
+	useEffect(() => {
+		if (
+			!bottomTrack ||
+			!next ||
+			bottomTrack === false ||
+			searchResults.length === 0
+		) {
+			setBottomTrack(false);
+			setTrackLoading(false);
+			return;
+		}
+
 		var config = {
 			method: "get",
-			url:
-				offset > 100
-					? `https://api.spotify.com/v1/playlists/${playlist}/tracks?offset=${offset}`
-					: `https://api.spotify.com/v1/playlists/${playlist}/tracks`,
+			url: next,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${accessToken}`,
 			},
 		};
-
 		axios(config)
 			.then((response) => {
 				let data = response.data;
 
-				setSearchResults(
-					data.items.map((payload) => {
-						const track = payload.track;
-
-						const smallestAlbumImage = track.album.images.reduce(
-							(smallest, image) => {
-								if (image.height < smallest.height) return image;
-								return smallest;
-							}
-						);
-
-						const biggestAlbumImage = track.album.images.reduce(
-							(largest, image) => {
-								if (image.height > largest.height) return image;
-								return largest;
-							}
-						);
-
-						return {
-							artist: track.artists[0].name,
-							title: track.name,
-							uri: track.uri,
-							albumUrl: smallestAlbumImage.url,
-							bigImage: biggestAlbumImage.url,
-						};
-					})
-				);
-				setNext(data.prev !== null ? data.prev : undefined);
+				data.items.reverse().forEach((item) => {
+					setSearchResults((prev) => [...prev, getTrack(item)]);
+				});
+				setNext(data.previous !== null ? data.previous : undefined);
+				setBottomTrack(false);
+				setTrackLoading(false);
 			})
 			.catch(function (error) {
 				console.log(error);
 			});
-	}, [offset]);
+		// eslint-disable-next-line
+	}, [bottomTrack]);
 
-	// useEffect(() => {
-	// 	if (!next) return;
-	// 	var config = {
-	// 		method: "get",
-	// 		url: next,
-	// 		headers: {
-	// 			Accept: "application/json",
-	// 			"Content-Type": "application/json",
-	// 			Authorization: `Bearer ${accessToken}`,
-	// 		},
-	// 	};
-	// 	axios(config).then((res) => {
-	// 		getTrackData(res.data.items);
-	// 		tempTracks.forEach((track) => {
-	// 			setSearchResults((prevState) => [...prevState, track]);
-	// 		});
-	// 		setNext(res.data.next !== null ? res.data.next : null);
-	// 	});
-	// 	// eslint-disable-next-line
-	// }, [next]);
-	//function getTrackData(items) {
-	// setTempTracks(
-	// 	items.map((payload) => {
-	// 		const track = payload.track;
-	// 		const smallestAlbumImage =
-	// 			track.album.images.length > 1
-	// 				? track.album.images.reduce((smallest, image) => {
-	// 						if (image.height < smallest.height) return image;
-	// 						return smallest;
-	// 				  })
-	// 				: "";
-	// 		const biggestAlbumImage =
-	// 			track.album.images.length > 1
-	// 				? track.album.images.reduce((largest, image) => {
-	// 						if (image.height > largest.height) return image;
-	// 						return largest;
-	// 				  })
-	// 				: "";
-	// 		return {
-	// 			key: track.id,
-	// 			artist: track.artists[0].name,
-	// 			title: track.name,
-	// 			uri: track.uri,
-	// 			albumUrl: smallestAlbumImage.url,
-	// 			bigImage: biggestAlbumImage.url,
-	// 		};
-	// 	})
-	// );
-	//}
+	function getTrack(item) {
+		const track = item.track;
 
+		const smallestAlbumImage = track.album.images.reduce((smallest, image) => {
+			if (image.height < smallest.height) return image;
+			return smallest;
+		});
+
+		const biggestAlbumImage = track.album.images.reduce((largest, image) => {
+			if (image.height > largest.height) return image;
+			return largest;
+		});
+
+		return {
+			artist: track.artists[0].name,
+			title: track.name,
+			uri: track.uri,
+			albumUrl: smallestAlbumImage.url,
+			bigImage: biggestAlbumImage.url,
+		};
+	}
 	return (
 		<div
 			className="d-flex flex-column justify-content-stretch position-relative"
