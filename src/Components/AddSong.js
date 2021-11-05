@@ -22,6 +22,7 @@ export default function AddSong(params) {
 				<Modal.Header
 					style={{
 						background: "rgba(52,52,52,.5)",
+						borderBottom: "none",
 					}}
 					closeButton
 				>
@@ -55,6 +56,7 @@ export default function AddSong(params) {
 				<Modal.Footer
 					style={{
 						background: "rgba(52,52,52,1)",
+						borderTop: "none",
 					}}
 				>
 					<Button variant="secondary" onClick={handleClose}>
