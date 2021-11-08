@@ -21,10 +21,11 @@ export default function SideBar({
 	setBottomTrack,
 	setTrackLoading,
 	searchResults,
+	offset,
+	setOffset,
 }) {
-	const [offset, setOffset] = useState();
-	const [playlist, setPlaylist] = useState();
 	const [next, setNext] = useState();
+	const [playlist, setPlaylist] = useState();
 	useEffect(() => {
 		if (!image) return;
 	}, [image]);
@@ -37,7 +38,11 @@ export default function SideBar({
 		spotifyApi.getPlaylist(playlistId).then(
 			function (data) {
 				setCurrentPlaylist(data.body.uri);
-				setOffset(total < 100 ? total : Math.round(total / 100) * 100);
+				setOffset(total <= 100 ? total : Math.round(total / 100) * 100);
+				//Ensures that if offsets are the same then the playlist with the same number of tracks will still load
+				if (offset === total) {
+					setOffset((prevState) => prevState - 10);
+				}
 			},
 			function (err) {
 				console.log("Something went wrong!", err);
@@ -48,6 +53,7 @@ export default function SideBar({
 	useEffect(
 		() => {
 			if (!offset || !playlist) return;
+			console.log(playlist);
 			var config = {
 				method: "get",
 				url:
@@ -173,7 +179,7 @@ export default function SideBar({
 			style={{ height: "100vh" }}
 		>
 			<ListGroup
-				className=" justify-content-top"
+				className="justify-content-top"
 				style={{
 					overflowY: "auto",
 					height: "60%",
