@@ -37,6 +37,7 @@ export default function Dashboard({
 	const [trackComp, setTrackComp] = useState([]);
 	const [bottomTrack, setBottomTrack] = useState(false);
 	const [trackLoading, setTrackLoading] = useState(false);
+	const [offset, setOffset] = useState(0);
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
@@ -61,6 +62,7 @@ export default function Dashboard({
 		setSearch("");
 		setLyrics("");
 		setCurrentPlaylist("");
+		setOffset(0);
 		setSearchResults([]);
 		setTrackComp([]);
 	}
@@ -245,6 +247,8 @@ export default function Dashboard({
 					bottomTrack={bottomTrack}
 					setTrackLoading={setTrackLoading}
 					searchResults={searchResults}
+					offset={offset}
+					setOffset={setOffset}
 				/>
 			</Container>
 			{songAdded ? (
