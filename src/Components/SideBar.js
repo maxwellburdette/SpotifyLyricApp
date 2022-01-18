@@ -53,7 +53,6 @@ export default function SideBar({
 	useEffect(
 		() => {
 			if (!offset || !playlist) return;
-			console.log(playlist);
 			var config = {
 				method: "get",
 				url:
