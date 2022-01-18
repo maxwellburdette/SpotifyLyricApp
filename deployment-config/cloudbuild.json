@@ -17,6 +17,8 @@
 				"REACT_APP_PROD_ID=${_REACT_APP_PROD_ID}",
 				"--build-arg",
 				"REACT_APP_REFRESH=${_REACT_APP_REFRESH}",
+				"--build-arg",
+				"GENERATE_SOURCEMAP=${_GENERATE_SOURCEMAP}",
 				"-f",
 				"deployment-config/Dockerfile",
 				"-t",
@@ -52,7 +54,9 @@
 				"--set-env-vars",
 				"REACT_APP_PROD_ID=${_REACT_APP_PROD_ID}",
 				"--set-env-vars",
-				"REACT_APP_REFRESH=${_REACT_APP_REFRESH}"
+				"REACT_APP_REFRESH=${_REACT_APP_REFRESH}",
+				"--set-env-vars",
+				"GENERATE_SOURCEMAP=${_GENERATE_SOURCEMAP}"
 			]
 		}
 	],
