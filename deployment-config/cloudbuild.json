@@ -50,7 +50,7 @@
 				"--set-env-vars",
 				"REACT_APP_LYRICS=${_REACT_APP_LYRICS}",
 				"--set-env-vars",
-				"REACT_APP_PROD_ID={_REACT_APP_PROD_ID}",
+				"REACT_APP_PROD_ID=${_REACT_APP_PROD_ID}",
 				"--set-env-vars",
 				"REACT_APP_REFRESH=${_REACT_APP_REFRESH}"
 			]
