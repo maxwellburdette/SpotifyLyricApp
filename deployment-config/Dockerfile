@@ -4,10 +4,12 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install -g serve && npm run build
+RUN npm install -g serve
 
 # Bundle app source
 COPY . .
+
+RUN npm run build
 
 EXPOSE 3000
 
