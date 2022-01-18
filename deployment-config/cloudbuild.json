@@ -1,12 +1,6 @@
 {
 	"steps": [
 		{
-			"name": "node",
-			"id": "Install application dependencies",
-			"entrypoint": "npm",
-			"args": ["install"]
-		},
-		{
 			"name": "gcr.io/cloud-builders/docker",
 			"id": "Dockerizing application",
 			"args": [
