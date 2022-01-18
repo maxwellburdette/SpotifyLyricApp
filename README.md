@@ -2,9 +2,10 @@
 
 # Production:
 
-<a href="https://spotifyplus.netlify.app" target="_blank">Spotify App<a/>
+<a href="https://spotify-lyric-app-l4e3pf3ciq-uc.a.run.app" target="_blank">Spotify App<a/>
 
 ### Features:
+
 <ul>
   <li>Access to playlists with ability to add songs to them.</li>
   <li>Search any track by name or artist.</li>
