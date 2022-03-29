@@ -149,7 +149,7 @@ export default function Player({
 
 	if (!accessToken) return null;
 	return (
-		<Container style={{ border: "1px solid #fff" }} fluid>
+		<Container fluid>
 			<PlayerSDK
 				style={{ position: "relative" }}
 				accessToken={accessToken}
