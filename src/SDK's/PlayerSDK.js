@@ -1,6 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ProgressBar } from "react-bootstrap";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Slider from "@mui/material/Slider";
+import VolumeDown from "@mui/icons-material/VolumeDown";
+import VolumeUp from "@mui/icons-material/VolumeUp";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import "./Player.css";
 export default function PlayerSDK({
 	accessToken,
 	setDevice,
@@ -21,6 +27,24 @@ export default function PlayerSDK({
 	const [previousTrack, setPreviousTrack] = useState("");
 	const [duration, setDuration] = useState(0);
 	const [position, setPosition] = useState();
+	const [value, setValue] = useState(0.5);
+	const sliderRef = useRef();
+	const [mute, setMute] = useState(false);
+	const handleChange = (event, newValue) => {
+		setValue(newValue);
+	};
+
+	useEffect(() => {
+		if (!value || !player) return;
+		console.log(value);
+		if (value <= 0.05) {
+			setMute(true);
+			player.setVolume(0);
+			return;
+		}
+		setMute(false);
+		player.setVolume(value);
+	}, [value]);
 
 	useEffect(() => {
 		if (!previousTrack) {
@@ -90,15 +114,13 @@ export default function PlayerSDK({
 
 	return (
 		<div
-			style={{ width: "100%", height: "100%" }}
-			className="d-flex justify-content-center align-items-center position-relative"
+			// style={{ width: "100%", height: "100%" }}
+			className="d-flex justify-content-between align-items-center position-relative"
 		>
-			<ProgressBar now={60} />
-
 			{track ? (
 				<div
-					className="d-flex ml-2 align-items-center position-absolute"
-					style={{ left: 0 }}
+					className="d-flex ml-2 mb-3 align-items-center position-relative"
+					style={{ width: "30%" }}
 				>
 					<img
 						src={track.albumUrl}
@@ -117,20 +139,32 @@ export default function PlayerSDK({
 			)}
 
 			<ul
-				style={{ listStyle: "none" }}
-				className="d-flex flex-direction-column m-2"
+				style={{ listStyle: "none", width: "60%" }}
+				className="d-flex flex-direction-colum justify-content-center align-items-center mb-2 p-2"
 			>
-				<li className="p-2 mt-2">
-					<FontAwesomeIcon
+				<li className="p-2 play">
+					<ion-icon
+						name="play-skip-back"
+						onClick={() => {
+							player.previousTrack();
+						}}
+						style={{
+							width: "2em",
+							height: "2em",
+							color: "#fff",
+							cursor: "pointer",
+						}}
+					></ion-icon>
+					{/* <FontAwesomeIcon
 						onClick={() => {
 							player.previousTrack();
 						}}
 						style={{ color: "#fff", cursor: "pointer" }}
 						icon={["fas", "step-backward"]}
 						size="2x"
-					/>
+					/> */}
 				</li>
-				<li className="p-2">
+				<li className="p-2 mb-2 play">
 					{/* <Button onClick={playButton}>Play</Button> */}
 					<FontAwesomeIcon
 						onClick={() => {
@@ -141,17 +175,57 @@ export default function PlayerSDK({
 						size="3x"
 					/>
 				</li>
-				<li className="p-2 mt-2">
-					<FontAwesomeIcon
+				<li className="p-2 play">
+					{/* <FontAwesomeIcon
 						onClick={() => {
 							player.nextTrack();
 						}}
 						style={{ color: "#fff", cursor: "pointer" }}
 						icon={["fas", "step-forward"]}
 						size="2x"
-					/>
+					/> */}
+					<ion-icon
+						name="play-skip-forward"
+						onClick={() => {
+							player.nextTrack();
+						}}
+						style={{
+							width: "2em",
+							height: "2em",
+							color: "#fff",
+							cursor: "pointer",
+						}}
+					></ion-icon>
 				</li>
 			</ul>
+			<Box sx={{ width: "25%" }} className="mb-2 p-2">
+				<Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
+					{!mute ? (
+						<VolumeDown style={{ color: "#fff" }} />
+					) : (
+						<VolumeOffIcon style={{ color: "#fff" }}></VolumeOffIcon>
+					)}
+					<Slider
+						aria-label="Volume"
+						id="bar"
+						min={0.0}
+						step={0.05}
+						max={1}
+						value={value}
+						onChange={handleChange}
+						ref={sliderRef}
+					/>
+					<VolumeUp style={{ color: "#fff" }} />
+				</Stack>
+			</Box>
+			<Slider
+				className="position-absolute"
+				id="bar"
+				defaultValue={50}
+				aria-label="Default"
+				size="small"
+				style={{ bottom: 0, marginTop: "10px" }}
+			/>
 		</div>
 	);
 }
