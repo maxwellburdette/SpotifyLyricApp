@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-//import SpotifyPlayer from "react-spotify-web-playback";
-//import Shuffle from "./Shuffle";
-//import SongQueue from "../Components/SongQueue";
 import axios from "axios";
 import PlayerSDK from "../SDK's/PlayerSDK";
 import { Container } from "react-bootstrap";
@@ -81,41 +78,6 @@ export default function Player({
 
 	useEffect(() => {
 		if (!currentlyPlaying) return;
-		// var config = {
-		// 	method: "get",
-		// 	url: `https://api.spotify.com/v1/tracks/${currentlyPlaying.id}`,
-		// 	headers: {
-		// 		Accept: "application/json",
-		// 		"Content-Type": "application/json",
-		// 		Authorization: `Bearer ${accessToken}`,
-		// 	},
-		// };
-
-		// axios(config)
-		// 	.then(function (res) {
-		// 		const images = res.data.album.images;
-		// 		const track = res.data;
-		// 		const biggestAlbumImage = images.reduce((largest, image) => {
-		// 			if (image.height > largest.height) return image;
-		// 			return largest;
-		// 		});
-
-		// 		const smallestImage = images.reduce((smallest, image) => {
-		// 			if (image.height < smallest.height) return image;
-		// 			return smallest;
-		// 		});
-
-		// 		setTrack({
-		// 			artist: track.artists[0].name,
-		// 			title: track.name,
-		// 			uri: track.uri,
-		// 			albumUrl: smallestImage.url,
-		// 			bigImage: biggestAlbumImage.url,
-		// 		});
-		// 	})
-		// 	.catch(function (error) {
-		// 		console.log(error);
-		// 	});
 
 		const biggestAlbumImage = currentlyPlaying.album.images.reduce(
 			(largest, image) => {
@@ -156,31 +118,7 @@ export default function Player({
 				setDevice={setDevice}
 				setCurrentlyPlaying={setCurrentlyPlaying}
 				track={track}
-			>
-				{/* <SpotifyPlayer
-				ref={player}
-				token={accessToken}
-				showSaveIcon
-				callback={(state) => {
-					setState(state);
-				}}
-				syncExternalDevice={true}
-				//persistDeviceSelection={true}
-				styles={{
-					activeColor: "#fff",
-					bgColor: "#333",
-					color: "#fff",
-					loaderColor: "#fff",
-					sliderColor: "#1cb954",
-					trackArtistColor: "#ccc",
-					trackNameColor: "#fff",
-				}}
-				magnifySliderOnHover="true"
-				initialVolume={0.5}
-			/>
-			<Shuffle spotifyApi={spotifyApi}></Shuffle>
-			<SongQueue setToggleQueue={setToggleQueue}></SongQueue> */}
-			</PlayerSDK>
+			></PlayerSDK>
 		</Container>
 	);
 }

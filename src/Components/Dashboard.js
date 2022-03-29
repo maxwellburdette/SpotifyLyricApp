@@ -3,7 +3,7 @@ import useAuth from "../Hooks/useAuth";
 import TrackSearchResult from "./TrackSearchResult";
 import Player from "./Player";
 import SideBar from "./SideBar";
-import { Container, Form } from "react-bootstrap";
+import { Container, Form, Spinner } from "react-bootstrap";
 import SpotifyWebApi from "spotify-web-api-node";
 import axios from "axios";
 import "../App.css";
@@ -35,6 +35,9 @@ export default function Dashboard({
 	const [imageLoading, setImageLoading] = useState(false);
 	const title = useRef(document.getElementById("title"));
 	const [trackComp, setTrackComp] = useState([]);
+	const [bottomTrack, setBottomTrack] = useState(false);
+	const [trackLoading, setTrackLoading] = useState(false);
+	const [offset, setOffset] = useState(0);
 
 	//API
 	const lyricsEndpoint = process.env.REACT_APP_LYRICS;
@@ -59,6 +62,7 @@ export default function Dashboard({
 		setSearch("");
 		setLyrics("");
 		setCurrentPlaylist("");
+		setOffset(0);
 		setSearchResults([]);
 		setTrackComp([]);
 	}
@@ -202,6 +206,15 @@ export default function Dashboard({
 		);
 	}, [user]);
 
+	function handleScroll(e) {
+		const bottom =
+			e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+		if (bottom && searchResults.length > 1) {
+			setBottomTrack(true);
+			setTrackLoading(true);
+		}
+	}
+
 	return (
 		<Container
 			className="d-flex p-0 mb-0"
@@ -227,8 +240,15 @@ export default function Dashboard({
 					addSong={addSong}
 					setSongAdded={setSongAdded}
 					setCurrentPlaylist={setCurrentPlaylist}
+					currentPlaylist={currentPlaylist}
 					imageLoading={imageLoading}
 					setTrackComp={setTrackComp}
+					setBottomTrack={setBottomTrack}
+					bottomTrack={bottomTrack}
+					setTrackLoading={setTrackLoading}
+					searchResults={searchResults}
+					offset={offset}
+					setOffset={setOffset}
 				/>
 			</Container>
 			{songAdded ? (
@@ -252,8 +272,26 @@ export default function Dashboard({
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
 				></Form.Control>
-
-				<div className="flex-grow-1 my-2" style={{ overflowY: "auto" }}>
+				{trackLoading ? (
+					<Spinner
+						animation="border"
+						variant="success"
+						className="position-absolute align-self-center"
+						style={{
+							zIndex: "10000",
+							bottom: "10%",
+							width: "100px",
+							height: "100px",
+						}}
+					/>
+				) : (
+					""
+				)}
+				<div
+					className="flex-grow-1 my-2 "
+					style={{ overflowY: "auto" }}
+					onScroll={handleScroll}
+				>
 					{searchResults.map((track) => (
 						<TrackSearchResult
 							track={track}

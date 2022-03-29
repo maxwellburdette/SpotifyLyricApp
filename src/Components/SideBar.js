@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ListGroup, Image, Container } from "react-bootstrap";
 import "./sidebar.css";
 import AddSong from "./AddSong";
 import { Grow } from "@material-ui/core";
+import axios from "axios";
+
 export default function SideBar({
 	user,
 	playlists,
@@ -14,42 +16,33 @@ export default function SideBar({
 	setCurrentPlaylist,
 	imageLoading,
 	setTrackComp,
+	accessToken,
+	bottomTrack,
+	setBottomTrack,
+	setTrackLoading,
+	searchResults,
+	offset,
+	setOffset,
 }) {
+	const [next, setNext] = useState();
+	const [playlist, setPlaylist] = useState();
 	useEffect(() => {
 		if (!image) return;
 	}, [image]);
 	function handle(e) {
 		e.preventDefault();
 		let playlistId = e.target.value;
+		let total = e.target.id;
+		setPlaylist(playlistId);
 		setTrackComp([]);
 		spotifyApi.getPlaylist(playlistId).then(
 			function (data) {
 				setCurrentPlaylist(data.body.uri);
-				setSearchResults(
-					data.body.tracks.items.map((track) => {
-						const smallestAlbumImage = track.track.album.images.reduce(
-							(smallest, image) => {
-								if (image.height < smallest.height) return image;
-								return smallest;
-							}
-						);
-
-						const biggestAlbumImage = track.track.album.images.reduce(
-							(largest, image) => {
-								if (image.height > largest.height) return image;
-								return largest;
-							}
-						);
-
-						return {
-							artist: track.track.artists[0].name,
-							title: track.track.name,
-							uri: track.track.uri,
-							albumUrl: smallestAlbumImage.url,
-							bigImage: biggestAlbumImage.url,
-						};
-					})
-				);
+				setOffset(total <= 100 ? total : Math.round(total / 100) * 100);
+				//Ensures that if offsets are the same then the playlist with the same number of tracks will still load
+				if (offset === total) {
+					setOffset((prevState) => prevState - 10);
+				}
 			},
 			function (err) {
 				console.log("Something went wrong!", err);
@@ -57,13 +50,135 @@ export default function SideBar({
 		);
 	}
 
+	useEffect(
+		() => {
+			if (!offset || !playlist) return;
+			var config = {
+				method: "get",
+				url:
+					offset > 100
+						? `https://api.spotify.com/v1/playlists/${playlist}/tracks?offset=${offset}`
+						: `https://api.spotify.com/v1/playlists/${playlist}/tracks`,
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+			};
+
+			axios(config)
+				.then((response) => {
+					let data = response.data;
+					setSearchResults(
+						data.items
+							.filter((payload) => {
+								if (payload.track === null) {
+									return false;
+								}
+								return true;
+							})
+							.reverse()
+							.map((payload) => {
+								const track = payload.track;
+								const smallestAlbumImage = track.album.images.reduce(
+									(smallest, image) => {
+										if (image.height < smallest.height) return image;
+										return smallest;
+									}
+								);
+
+								const biggestAlbumImage = track.album.images.reduce(
+									(largest, image) => {
+										if (image.height > largest.height) return image;
+										return largest;
+									}
+								);
+
+								return {
+									artist: track.artists[0].name,
+									title: track.name,
+									uri: track.uri,
+									albumUrl: smallestAlbumImage.url,
+									bigImage: biggestAlbumImage.url,
+								};
+							})
+					);
+					setNext(data.previous !== null ? data.previous : undefined);
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		},
+		// eslint-disable-next-line
+		[offset]
+	);
+
+	useEffect(() => {
+		if (
+			!bottomTrack ||
+			!next ||
+			bottomTrack === false ||
+			searchResults.length === 0
+		) {
+			setBottomTrack(false);
+			setTrackLoading(false);
+			return;
+		}
+
+		var config = {
+			method: "get",
+			url: next,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${accessToken}`,
+			},
+		};
+		axios(config)
+			.then((response) => {
+				let data = response.data;
+
+				data.items.reverse().forEach((item) => {
+					setSearchResults((prev) => [...prev, getTrack(item)]);
+				});
+				setNext(data.previous !== null ? data.previous : undefined);
+				setBottomTrack(false);
+				setTrackLoading(false);
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		// eslint-disable-next-line
+	}, [bottomTrack]);
+
+	function getTrack(item) {
+		const track = item.track;
+
+		const smallestAlbumImage = track.album.images.reduce((smallest, image) => {
+			if (image.height < smallest.height) return image;
+			return smallest;
+		});
+
+		const biggestAlbumImage = track.album.images.reduce((largest, image) => {
+			if (image.height > largest.height) return image;
+			return largest;
+		});
+
+		return {
+			artist: track.artists[0].name,
+			title: track.name,
+			uri: track.uri,
+			albumUrl: smallestAlbumImage.url,
+			bigImage: biggestAlbumImage.url,
+		};
+	}
 	return (
 		<div
 			className="d-flex flex-column justify-content-stretch position-relative"
 			style={{ height: "100vh" }}
 		>
 			<ListGroup
-				className=" justify-content-top"
+				className="justify-content-top"
 				style={{
 					overflowY: "auto",
 					height: "60%",
@@ -103,6 +218,7 @@ export default function SideBar({
 						}}
 						onClick={handle}
 						value={playlist.id}
+						id={playlist.tracks.total}
 						action
 					>
 						{playlist.name}
