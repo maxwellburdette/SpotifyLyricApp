@@ -1,0 +1,15 @@
+.list {
+	background: #111;
+	color: #fff;
+}
+
+.list .list-item {
+	transition: 0.3s;
+}
+
+.list .list-item:hover {
+	background: #222;
+}
+.MuiListItemButton-root .MuiListItemButton-gutters .Mui-selected {
+	background: #222;
+}

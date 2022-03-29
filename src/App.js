@@ -3,7 +3,7 @@ import Dashboard from "./Components/Dashboard";
 import { useState, useRef, useEffect } from "react";
 import { Fade } from "@material-ui/core";
 import "./App.css";
-
+import NewDashboard from "./NewUIComponents/NewDashboard";
 const code = new URLSearchParams(window.location.search).get("code");
 
 function App() {
@@ -20,35 +20,38 @@ function App() {
 	);
 
 	return (
-		<Fade in={true}>
-			<div
-				ref={appRef}
-				className="app backgroundElement"
-				style={
-					backgroundColor
-						? {
-								transition: "0.5s",
-								backgroundImage: backgroundColor,
-						  }
-						: {
-								transition: "0.5s",
-								backgroundImage:
-									"linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
-						  }
-				}
-			>
-				{code ? (
-					<Dashboard
-						style={{ padding: "0 !important", margin: "0 !important" }}
-						setBackgroundColor={setBackgroundColor}
-						backgroundColor={backgroundColor}
-						code={code}
-					></Dashboard>
-				) : (
-					<Login />
-				)}
-			</div>
-		</Fade>
+		// <Fade in={true}>
+		// 	<div
+		// 		ref={appRef}
+		// 		className="app backgroundElement"
+		// 		style={
+		// 			backgroundColor
+		// 				? {
+		// 						transition: "0.5s",
+		// 						backgroundImage: backgroundColor,
+		// 				  }
+		// 				: {
+		// 						transition: "0.5s",
+		// 						backgroundImage:
+		// 							"linear-gradient(rgba(52,52,52,.5), rgba(52,52,52,1)",
+		// 				  }
+		// 		}
+		// 	>
+		// 		{code ? (
+		// 			<Dashboard
+		// 				style={{ padding: "0 !important", margin: "0 !important" }}
+		// 				setBackgroundColor={setBackgroundColor}
+		// 				backgroundColor={backgroundColor}
+		// 				code={code}
+		// 			></Dashboard>
+		// 		) : (
+		// 			<Login />
+		// 		)}
+		// 	</div>
+		// </Fade>
+		<div className="App">
+			<NewDashboard />
+		</div>
 	);
 }
 
