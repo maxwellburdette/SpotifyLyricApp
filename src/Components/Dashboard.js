@@ -282,7 +282,7 @@ export default function Dashboard({
 				</div>
 
 				<Container fluid>
-					<div className="mb-2">
+					<div className="mb-2" style={{ borderTop: "1px solid #fff" }}>
 						<Player
 							accessToken={accessToken}
 							spotifyApi={spotifyApi}
