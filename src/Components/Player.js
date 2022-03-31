@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import PlayerSDK from "../SDK's/PlayerSDK";
 import { Container } from "react-bootstrap";
@@ -10,47 +10,47 @@ export default function Player({
 	setImageLoading,
 	setToggleQueue,
 }) {
-	const [state, setState] = useState();
+	// const [state, setState] = useState();
 	const [currentlyPlaying, setCurrentlyPlaying] = useState();
-	const [currentDevice, setCurrentDevice] = useState();
+	// const [currentDevice, setCurrentDevice] = useState();
 	const [track, setTrack] = useState();
 
 	const [device, setDevice] = useState("");
 
-	useEffect(() => {
-		if (!state) return;
-		if (state.deviceId === state.currentDeviceId && state.isActive) {
-			const track = state.track;
-			if (!currentlyPlaying) {
-				setCurrentlyPlaying(state.track);
-				return;
-			}
+	// useEffect(() => {
+	// 	if (!state) return;
+	// 	if (state.deviceId === state.currentDeviceId && state.isActive) {
+	// 		const track = state.track;
+	// 		if (!currentlyPlaying) {
+	// 			setCurrentlyPlaying(state.track);
+	// 			return;
+	// 		}
 
-			if (currentlyPlaying.uri !== track.uri) {
-				setCurrentlyPlaying(track);
-			}
-		} else {
-			state.devices.map((device) => {
-				if (device.is_active === true) {
-					setCurrentDevice(device.id);
+	// 		if (currentlyPlaying.uri !== track.uri) {
+	// 			setCurrentlyPlaying(track);
+	// 		}
+	// 	} else {
+	// 		state.devices.map((device) => {
+	// 			if (device.is_active === true) {
+	// 				setCurrentDevice(device.id);
 
-					const playingTrack = state.track;
-					if (!currentlyPlaying) {
-						setCurrentlyPlaying(playingTrack);
-						return 0;
-					}
+	// 				const playingTrack = state.track;
+	// 				if (!currentlyPlaying) {
+	// 					setCurrentlyPlaying(playingTrack);
+	// 					return 0;
+	// 				}
 
-					if (playingTrack.uri !== currentlyPlaying.uri) {
-						setCurrentlyPlaying(playingTrack);
-					}
-				} else {
-					setCurrentDevice(state.currentDeviceId);
-				}
-				return 0;
-			});
-		}
-		// eslint-disable-next-line
-	}, [state]);
+	// 				if (playingTrack.uri !== currentlyPlaying.uri) {
+	// 					setCurrentlyPlaying(playingTrack);
+	// 				}
+	// 			} else {
+	// 				setCurrentDevice(state.currentDeviceId);
+	// 			}
+	// 			return 0;
+	// 		});
+	// 	}
+	// 	// eslint-disable-next-line
+	// }, [state]);
 
 	useEffect(() => {
 		var data = JSON.stringify({

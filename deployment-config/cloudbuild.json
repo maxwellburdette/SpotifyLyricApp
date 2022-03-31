@@ -43,6 +43,8 @@
 				"gcr.io/$PROJECT_ID/spotify-lyric-app:$COMMIT_SHA",
 				"--region",
 				"us-central1",
+				"--service-account",
+				"${_SERVICE_ACCOUNT}",
 				"--set-env-vars",
 				"REACT_APP_AUTH_URL=${_REACT_APP_AUTH_URL}",
 				"--set-env-vars",
