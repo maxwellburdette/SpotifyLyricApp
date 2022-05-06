@@ -1,0 +1,58 @@
+.play {
+	transition: transform 100ms ease-in-out;
+}
+
+.play:hover {
+	transform: scale(125%);
+}
+
+#bar {
+	transition: 100ms ease-in-out;
+	color: #fff;
+	cursor: inherit;
+}
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeMedium.MuiSlider-thumb,
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeSmall.MuiSlider-thumb {
+	display: none;
+}
+#bar:hover
+	.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeMedium.MuiSlider-thumb,
+#bar:hover
+	.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeSmall.MuiSlider-thumb {
+	display: block;
+}
+
+.MuiSlider-thumbColorPrimary:hover {
+	color: #fff;
+	display: block;
+}
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeMedium.MuiSlider-thumb.Mui-focusVisible,
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeSmall.MuiSlider-thumb.Mui-focusVisible {
+	box-shadow: none;
+}
+#bar:hover .css-eg0mwd-MuiSlider-thumb,
+#bar:hover .css-14gf62f-MuiSlider-thumb,
+.css-eg0mwd-MuiSlider-thumb.Mui-focusVisible,
+.css-14gf62f-MuiSlider-thumb.Mui-focusVisible {
+	box-shadow: none;
+}
+#bar:hover .MuiSlider-track,
+#bar:focus .MuiSlider-track {
+	color: #28a745;
+}
+
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeSmall.MuiSlider-thumb
+	> ::before,
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeSmall.MuiSlider-thumb
+	> ::after {
+	content: "";
+	box-shadow: none;
+}
+
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeMedium.MuiSlider-thumb
+	> ::before,
+.MuiSlider-thumbColorPrimary.MuiSlider-thumbSizeMediumMuiSlider-thumb
+	> ::after {
+	content: "";
+	box-shadow: none;
+}

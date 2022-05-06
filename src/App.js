@@ -1,6 +1,6 @@
 import Login from "./Components/Login";
 import Dashboard from "./Components/Dashboard";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Fade } from "@material-ui/core";
 import "./App.css";
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useAuth from "../Hooks/useAuth";
 import TrackSearchResult from "./TrackSearchResult";
 import Player from "./Player";
@@ -320,7 +320,7 @@ export default function Dashboard({
 				</div>
 
 				<Container fluid>
-					<div className="mb-2">
+					<div className="mb-2" style={{ borderTop: "1px solid #fff" }}>
 						<Player
 							accessToken={accessToken}
 							spotifyApi={spotifyApi}
