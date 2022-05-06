@@ -11,7 +11,9 @@ import styles from "./Player.css";
 import axios from "axios";
 import { withStyles } from "@material-ui/styles";
 
-function PlayerSDK({ accessToken, setDevice, setCurrentlyPlaying, track }) {
+const NO_DEVICE = "NO_DEVICE";
+
+function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 	const tempTrack = {
 		name: "",
 		album: {
@@ -20,6 +22,8 @@ function PlayerSDK({ accessToken, setDevice, setCurrentlyPlaying, track }) {
 		artists: [{ name: "" }],
 	};
 	const [player, setPlayer] = useState();
+	const [deviceState, setDeviceState] = useState();
+	const [deviceId, setDeviceId] = useState();
 	const [playerState, setPlayerState] = useState();
 	const [is_paused, setPaused] = useState(false);
 	const [is_active, setActive] = useState(false);
@@ -33,6 +37,7 @@ function PlayerSDK({ accessToken, setDevice, setCurrentlyPlaying, track }) {
 	const [prevVol, setPrevVol] = useState();
 	const [currentPosition, setCurrentPosition] = useState(0.5);
 	const [intervalFunc, setIntervalFunc] = useState();
+	const [deviceInterval, setDeviceInterval] = useState();
 	const [repeat, setRepeat] = useState();
 	const [seeking, setSeeking] = useState(false);
 
@@ -98,6 +103,38 @@ function PlayerSDK({ accessToken, setDevice, setCurrentlyPlaying, track }) {
 			});
 	}
 
+	function setDevice(id) {
+		const data = JSON.stringify({
+			device_ids: [id],
+		});
+
+		const config = {
+			method: "put",
+			url: "https://api.spotify.com/v1/me/player",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: "Bearer " + accessToken,
+			},
+			data: data,
+		};
+
+		axios(config)
+			.then(function () {})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}
+
+	useEffect(() => {
+		if (!deviceState) return;
+		const device = deviceState?.device;
+		if (!device || device.id !== deviceId) {
+			setDevice(deviceId);
+		}
+		// eslint-disable-next-line
+	}, [deviceState]);
+
 	useEffect(() => {
 		if (!playerState?.position) return;
 		if (!is_paused && !seeking) {
@@ -142,6 +179,7 @@ function PlayerSDK({ accessToken, setDevice, setCurrentlyPlaying, track }) {
 		script.src = "https://sdk.scdn.co/spotify-player.js";
 		script.async = true;
 		clearInterval(intervalFunc);
+		clearInterval(deviceInterval);
 		setValue(0.5);
 
 		document.body.appendChild(script);
@@ -159,17 +197,46 @@ function PlayerSDK({ accessToken, setDevice, setCurrentlyPlaying, track }) {
 
 			player.addListener("ready", ({ device_id }) => {
 				console.log("Ready with Device ID", device_id);
-				setDevice(device_id);
 				console.log(is_active);
+				setDevice(device_id);
+				setDeviceId(device_id);
 				setIntervalFunc(
 					setInterval(async () => {
 						setPlayerState(await player.getCurrentState());
 					}, 500)
 				);
+
+				setDeviceInterval(
+					setInterval(() => {
+						var config = {
+							method: "get",
+							url: "https://api.spotify.com/v1/me/player",
+							headers: {
+								Accept: "application/json",
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${accessToken}`,
+							},
+						};
+
+						axios(config)
+							.then(function (response) {
+								const data = response.data;
+								if (!data) {
+									setDeviceState(NO_DEVICE);
+									return;
+								}
+								setDeviceState(data);
+							})
+							.catch(function (error) {
+								console.log(error);
+							});
+					}, 10000)
+				);
 			});
 
 			player.addListener("not_ready", ({ device_id }) => {
 				console.log("Device ID has gone offline", device_id);
+				setDevice(device_id);
 			});
 
 			player.addListener("player_state_changed", (state) => {
