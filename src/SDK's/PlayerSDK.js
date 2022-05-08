@@ -21,6 +21,9 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 		},
 		artists: [{ name: "" }],
 	};
+	const leadingZeroFormatter = new Intl.NumberFormat(undefined, {
+		minimumIntegerDigits: 2,
+	});
 	const [player, setPlayer] = useState();
 	const [deviceState, setDeviceState] = useState();
 	const [deviceId, setDeviceId] = useState();
@@ -48,6 +51,20 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 		setSeeking(true);
 		setCurrentPosition(newValue);
 	}
+
+	function formatTime(time) {
+		const totalSeconds = time / 1000;
+		const seconds = Math.floor(totalSeconds % 60);
+		const minutes = Math.floor(totalSeconds / 60) % 60;
+		const hours = Math.floor(totalSeconds / 3600);
+		if (hours === 0) {
+			return `${minutes} : ${leadingZeroFormatter.format(seconds)}`;
+		}
+		return `${hours} : ${leadingZeroFormatter.format(
+			minutes
+		)} : ${leadingZeroFormatter.format(seconds)}`;
+	}
+
 	async function handleShuffle() {
 		const config = {
 			method: "put",
@@ -350,14 +367,6 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 					></ion-icon>
 				</li>
 				<li className="p-2 play mb-2">
-					{/* <ion-icon
-						name="repeat-sharp"
-						style={{
-							width: "1.5em",
-							height: "1.5em",
-							color: "#fff",
-						}}
-					></ion-icon> */}
 					{repeat === 0 ? (
 						<RepeatIcon
 							onClick={handleRepeat}
@@ -460,16 +469,7 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 							fontSize: ".9em",
 						}}
 					>
-						{currentPosition === 0 ? (
-							"0 : 00"
-						) : (
-							<>
-								{Math.floor(currentPosition / 1000 / 60)} :{" "}
-								{Math.ceil((currentPosition / 1000) % 60) <= 10
-									? `0${Math.ceil((currentPosition / 1000) % 60) - 1}`
-									: Math.ceil((currentPosition / 1000) % 60) - 1}
-							</>
-						)}
+						{formatTime(currentPosition)}
 					</div>
 					<Slider
 						onChange={handleChange2}
@@ -498,10 +498,7 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 							fontSize: ".9em",
 						}}
 					>
-						{Math.floor(duration / 1000 / 60)} :{" "}
-						{Math.floor((duration / 1000) % 60) < 10
-							? `0${Math.floor((duration / 1000) % 60)}`
-							: Math.floor((duration / 1000) % 60)}
+						{formatTime(duration)}
 					</div>
 				</Stack>
 			</div>

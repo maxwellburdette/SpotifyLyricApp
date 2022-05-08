@@ -323,7 +323,6 @@ export default function Dashboard({
 					<div className="mb-2" style={{ borderTop: "1px solid #fff" }}>
 						<Player
 							accessToken={accessToken}
-							spotifyApi={spotifyApi}
 							setAddSong={setAddSong}
 							setImageLoading={setImageLoading}
 						/>
