@@ -1,6 +1,6 @@
-FROM node:14-alpine
+FROM node:16-alpine as react-build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -25,8 +25,15 @@ ENV REACT_APP_PROD_ID $REACT_APP_PROD_ID
 ENV REACT_APP_REFRESH $REACT_APP_REFRESH
 ENV GENERATE_SOURCEMAP $GENERATE_SOURCEMAP
 
-RUN npm run dockerBuild
+RUN npm run build
 
+FROM nginx:alpine
+COPY ./deployment-config/nginx/nginx.conf /etc/nginx/conf.d/configfile.template
+COPY --from=react-build app/build /usr/share/nginx/html
+ENV PORT 3000
+ENV HOST 0.0.0.0
+
+RUN sh -c "envsubst '\$PORT'  < /etc/nginx/conf.d/configfile.template > /etc/nginx/conf.d/default.conf"
+COPY --from=react-build /app/build /usr/share/nginx/html
 EXPOSE 3000
-
-CMD ["serve", "-s", "build"]
+CMD ["nginx", "-g", "daemon off;"]
