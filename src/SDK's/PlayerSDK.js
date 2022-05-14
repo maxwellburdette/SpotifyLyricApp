@@ -11,8 +11,6 @@ import styles from "./Player.css";
 import axios from "axios";
 import { withStyles } from "@material-ui/styles";
 
-const NO_DEVICE = "NO_DEVICE";
-
 function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 	const tempTrack = {
 		name: "",
@@ -25,8 +23,6 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 		minimumIntegerDigits: 2,
 	});
 	const [player, setPlayer] = useState();
-	const [deviceState, setDeviceState] = useState();
-	const [deviceId, setDeviceId] = useState();
 	const [playerState, setPlayerState] = useState();
 	const [is_paused, setPaused] = useState(false);
 	const [is_active, setActive] = useState(false);
@@ -40,7 +36,6 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 	const [prevVol, setPrevVol] = useState();
 	const [currentPosition, setCurrentPosition] = useState(0.5);
 	const [intervalFunc, setIntervalFunc] = useState();
-	const [deviceInterval, setDeviceInterval] = useState();
 	const [repeat, setRepeat] = useState();
 	const [seeking, setSeeking] = useState(false);
 
@@ -120,37 +115,33 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 			});
 	}
 
-	function setDevice(id) {
-		const data = JSON.stringify({
-			device_ids: [id],
-		});
-
-		const config = {
-			method: "put",
-			url: "https://api.spotify.com/v1/me/player",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-				Authorization: "Bearer " + accessToken,
-			},
-			data: data,
-		};
-
-		axios(config)
-			.then(function () {})
-			.catch(function (error) {
-				console.log(error);
+	function setDevice(device) {
+		if (!device) return;
+		return new Promise((resolve, reject) => {
+			const data = JSON.stringify({
+				device_ids: [device],
 			});
-	}
 
-	useEffect(() => {
-		if (!deviceState) return;
-		const device = deviceState?.device;
-		if (!device || device.id !== deviceId) {
-			setDevice(deviceId);
-		}
-		// eslint-disable-next-line
-	}, [deviceState]);
+			const config = {
+				method: "put",
+				url: "https://api.spotify.com/v1/me/player",
+				headers: {
+					//Accept: "application/json",
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + accessToken,
+				},
+				data: data,
+			};
+
+			axios(config)
+				.then(() => {
+					resolve();
+				})
+				.catch((error) => {
+					reject(error);
+				});
+		});
+	}
 
 	useEffect(() => {
 		if (!playerState?.position) return;
@@ -196,7 +187,6 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 		script.src = "https://sdk.scdn.co/spotify-player.js";
 		script.async = true;
 		clearInterval(intervalFunc);
-		clearInterval(deviceInterval);
 		setValue(0.5);
 
 		document.body.appendChild(script);
@@ -212,42 +202,21 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 
 			setPlayer(player);
 
-			player.addListener("ready", ({ device_id }) => {
+			player.addListener("ready", async ({ device_id }) => {
 				console.log("Ready with Device ID", device_id);
 				console.log(is_active);
-				setDevice(device_id);
-				setDeviceId(device_id);
+				setActive(is_active);
+				try {
+					await setDevice(device_id);
+				} catch (err) {
+					console.error(err.message);
+					await setDevice(device_id);
+				}
+
 				setIntervalFunc(
 					setInterval(async () => {
 						setPlayerState(await player.getCurrentState());
 					}, 500)
-				);
-
-				setDeviceInterval(
-					setInterval(() => {
-						var config = {
-							method: "get",
-							url: "https://api.spotify.com/v1/me/player",
-							headers: {
-								Accept: "application/json",
-								"Content-Type": "application/json",
-								Authorization: `Bearer ${accessToken}`,
-							},
-						};
-
-						axios(config)
-							.then(function (response) {
-								const data = response.data;
-								if (!data) {
-									setDeviceState(NO_DEVICE);
-									return;
-								}
-								setDeviceState(data);
-							})
-							.catch(function (error) {
-								console.log(error);
-							});
-					}, 10000)
 				);
 			});
 
@@ -309,7 +278,7 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 
 			<ul
 				style={{ listStyle: "none", width: "50%" }}
-				className="d-flex flex-direction-colum justify-content-center align-items-center mb-2 p-2"
+				className="d-flex flex-direction-column justify-content-center align-items-center mb-2 p-2"
 			>
 				<li className="p-2 play">
 					<ion-icon
@@ -457,7 +426,7 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 			>
 				<Stack
 					className="d-flex align-items-center"
-					direction="horizontal"
+					direction="row"
 					gap={2}
 					style={{ width: "50%" }}
 				>
