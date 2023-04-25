@@ -59,12 +59,12 @@ export default function Dashboard({
 
 	function chooseTrack(track) {
 		setAddSong(track);
-		setSearch("");
-		setLyrics("");
-		setCurrentPlaylist("");
-		setOffset(0);
-		setSearchResults([]);
-		setTrackComp([]);
+		// setSearch("");
+		// setLyrics("");
+		// setCurrentPlaylist("");
+		// setOffset(0);
+		// setSearchResults([]);
+		// setTrackComp([]);
 	}
 
 	useEffect(() => {
