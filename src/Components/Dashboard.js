@@ -156,20 +156,20 @@ export default function Dashboard({
 			setImageLoading(false);
 		}, 200);
 
-		axios
-			.get(lyricsEndpoint, {
-				params: {
-					track: addSong.title,
-					artist: addSong.artist,
-				},
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				},
-			})
-			.then(async (res) => {
-				await setLyrics(res.data.lyrics);
-				setLoading(false);
-			});
+		// axios
+		// 	.get(lyricsEndpoint, {
+		// 		params: {
+		// 			track: addSong.title,
+		// 			artist: addSong.artist,
+		// 		},
+		// 		headers: {
+		// 			"Content-Type": "application/x-www-form-urlencoded",
+		// 		},
+		// 	})
+		// 	.then(async (res) => {
+		// 		await setLyrics(res.data.lyrics);
+		// 		setLoading(false);
+		// 	});
 		axios
 			.get(colorEndpoint, {
 				params: {
