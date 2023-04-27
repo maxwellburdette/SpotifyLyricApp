@@ -96,7 +96,8 @@ export default function TrackSearchResult({
         style={{
           cursor: "pointer",
           backgroundColor: "white",
-          borderRadius: "5px",
+          borderTopRightRadius: "5px",
+          borderBottomRightRadius: "5px",
           overflow: "hidden",
           // pointerEvents: context ? "none" : "",
         }}
@@ -132,7 +133,7 @@ export default function TrackSearchResult({
         <img
           src={track.albumUrl}
           alt=""
-          style={{ height: "64px", width: "64px" }}
+          style={{ height: "64px", width: "64px"}}
         />
         <div className="ml-3 ">
           <div>{track.title}</div>
