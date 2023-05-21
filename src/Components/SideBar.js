@@ -259,6 +259,7 @@ export default function SideBar({
 					spotifyApi={spotifyApi}
 					setSongAdded={setSongAdded}
 				></AddSong>
+
 			</Container>
 		</div>
 	);

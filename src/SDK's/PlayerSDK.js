@@ -10,6 +10,7 @@ import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import styles from "./Player.css";
 import axios from "axios";
 import { withStyles } from "@material-ui/styles";
+import Logo from "../Spotify_Logo_CMYK_Green.png";
 
 const NO_DEVICE = "NO_DEVICE";
 
@@ -501,6 +502,8 @@ function PlayerSDK({ accessToken, setCurrentlyPlaying, track }) {
 						{formatTime(duration)}
 					</div>
 				</Stack>
+				<img src={Logo} alt="" style={{objectFit: "cover", width: "50px", position: "absolute", left: "0", margin: "0 0 0 10px", bottom: "0"}} />
+
 			</div>
 		</div>
 	);

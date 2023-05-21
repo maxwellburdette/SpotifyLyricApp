@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PlayerSDK from "../SDK's/PlayerSDK";
 import { Container } from "react-bootstrap";
 
+
 export default function Player({ accessToken, setAddSong, setImageLoading }) {
 	const [currentlyPlaying, setCurrentlyPlaying] = useState();
 	const [track, setTrack] = useState();
