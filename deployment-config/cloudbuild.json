@@ -19,6 +19,8 @@
 				"REACT_APP_REFRESH=${_REACT_APP_REFRESH}",
 				"--build-arg",
 				"GENERATE_SOURCEMAP=${_GENERATE_SOURCEMAP}",
+				"--build-arg",
+				"REACT_APP_REDIRECT_URI=${_REACT_APP_REDIRECT_URI}",
 				"-f",
 				"deployment-config/Dockerfile",
 				"-t",
