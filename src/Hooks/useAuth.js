@@ -5,32 +5,20 @@ export default function useAuth(code) {
 	const [accessToken, setAccessToken] = useState();
 	const [refreshToken, setRefreshToken] = useState();
 	const [expiresIn, setExpiresIn] = useState();
-	const loginUrl = process.env.REACT_APP_LOGIN;
-	const refreshUrl = process.env.REACT_APP_REFRESH;
-	//Switch variable being taken by endpoint when using different environments
-	const environment = {
-		prod: "prod",
-		dev: "dev",
-	};
+	const authUrl = process.env.REACT_APP_LOGIN;
+	const redirectUri = process.env.REACT_APP_REDIRECT_URI;
 
 	useEffect(() => {
 		axios
-			.get(loginUrl, {
-				params: {
-					code: code,
-					env:
-						process.env.NODE_ENV === "production"
-							? environment.prod
-							: environment.dev,
-				},
+			.get(`${authUrl}/login?code=${code}&redirect_uri=${redirectUri}`, {
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded",
 				},
 			})
 			.then((res) => {
-				setAccessToken(res.data.accessToken);
-				setRefreshToken(res.data.refreshToken);
-				setExpiresIn(res.data.expiresIn);
+				setAccessToken(res.data.access_token);
+				setRefreshToken(res.data.refresh_token);
+				setExpiresIn(res.data.expires_in);
 				window.history.pushState({}, null, "/");
 			})
 			.catch((err) => {
@@ -44,21 +32,14 @@ export default function useAuth(code) {
 		if (!refreshToken || !expiresIn) return;
 		const internal = setInterval(() => {
 			axios
-				.get(refreshUrl, {
-					params: {
-						refreshToken: refreshToken,
-						env:
-							process.env.NODE_ENV === "production"
-								? environment.prod
-								: environment.dev,
-					},
+				.get(`${authUrl}/refresh`, {
 					headers: {
 						"Content-Type": "application/x-www-form-urlencoded",
 					},
 				})
 				.then((res) => {
-					setAccessToken(res.data.accessToken);
-					setExpiresIn(res.data.expiresIn);
+					setAccessToken(res.data.access_token);
+					setExpiresIn(res.data.expires_in);
 				})
 				.catch((err) => {
 					window.location = "/";
