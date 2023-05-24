@@ -2,7 +2,7 @@
 
 # Production:
 
-<a href="https://spotifymax.com" target="_blank">Spotify App<a/>
+[Spotify App](https://spotify-lyric-app-l4e3pf3ciq-uc.a.run.app/)
 
 ### Features:
 
